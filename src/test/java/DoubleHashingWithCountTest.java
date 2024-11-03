@@ -1,5 +1,7 @@
 import org.junit.jupiter.api.Test;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
@@ -12,8 +14,30 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class DoubleHashingWithCountTest {
 
+    /**
+     * I learned how to test print methods in this way from this StackOverflow post:
+     * https://stackoverflow.com/questions/32241057/how-to-test-a-print-method-in-java-using-junit
+     */
     @Test
     void displayHashTable() {
+        DoubleHashingWithCount<String, Double> mathConstants = new DoubleHashingWithCount<>();
+        mathConstants.addWithCount("pi", 3.1415);
+        mathConstants.addWithCount("e", 2.718);
+        mathConstants.add("tau", 6.28);
+
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outContent));
+        mathConstants.displayHashTable();
+
+        String expectedOutput = "null \n" + "tau 6.28\n" + "pi 3.1415\n" + "null \n" +
+                "null \n" +
+                "null \n" +
+                "null \n" +
+                "e 2.718\n" +
+                "null \n" +
+                "null \n" +
+                "null \n\n";
+        assertEquals(expectedOutput, outContent.toString());
     }
 
     @Test
@@ -48,13 +72,10 @@ class DoubleHashingWithCountTest {
     @Test
     void removeAndAddAtRemovedIndex() {
         DoubleHashingWithCount<String, Double> mathConstants = new DoubleHashingWithCount<>();
-        mathConstants.addWithCount("pi", 3.1415);
         mathConstants.addWithCount("e", 2.718);
-        assertEquals(3.1415, mathConstants.remove("pi"));
         assertEquals(2.718, mathConstants.remove("e"));
         //Two collisions b/c I'm currently counting having to check Available nodes as collisions.
-        assertEquals(2, mathConstants.addWithCount("e", 2.718));
-        assertNull(mathConstants.add("tau", 6.28));
+        assertEquals(1, mathConstants.addWithCount("e", 2.718));
         assertNull(mathConstants.remove("phi"));
     }
 

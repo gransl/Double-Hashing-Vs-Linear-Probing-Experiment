@@ -5,7 +5,7 @@ public class LinearProbingWithCount<K, V> implements DictionaryInterface<K, V>
 {
     // The dictionary:
     private int numberOfEntries;
-    private static final int DEFAULT_CAPACITY = 5;        // Must be prime
+    private static final int DEFAULT_CAPACITY = 11;        // Must be prime
     private static final int MAX_CAPACITY = 10000;
 
     // The hash table:

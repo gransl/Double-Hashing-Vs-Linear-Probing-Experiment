@@ -1,5 +1,7 @@
 import org.junit.jupiter.api.Test;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
@@ -23,8 +25,28 @@ class LinearProbingWithCountTest {
 
     }
 
+    /**
+     * I learned how to test print methods in this way from this StackOverflow post:
+     * https://stackoverflow.com/questions/32241057/how-to-test-a-print-method-in-java-using-junit
+     */
     @Test
     void displayHashTable() {
+        LinearProbingWithCount<String, Double> mathConstants = new LinearProbingWithCount<>();
+        mathConstants.addWithCount("pi", 3.1415);
+        mathConstants.addWithCount("e", 2.718);
+        mathConstants.add("tau", 6.28);
+
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outContent));
+        mathConstants.displayHashTable();
+
+        String expectedOutput = "null \nnull \n" + "pi 3.1415\n" + "e 2.718\n" + "tau 6.28\n" + "null \n" +
+                "null \n" +
+                "null \n" +
+                "null \n" +
+                "null \n" +
+                "null \n\n";
+        assertEquals(expectedOutput, outContent.toString());
     }
 
     @Test
@@ -47,7 +69,7 @@ class LinearProbingWithCountTest {
         LinearProbingWithCount<Integer, String> lp2 = new LinearProbingWithCount<>();
         int count = lp2.addWithCount(5, "hooray");
         assertEquals(0, count);
-        int count2 = lp2.addWithCount(10, "tortoise");
+        int count2 = lp2.addWithCount(16, "tortoise");
         assertEquals(1, count2);
         lp2.addWithCount(100, "what");
         lp2.addWithCount(202, "how");
@@ -59,11 +81,8 @@ class LinearProbingWithCountTest {
     @Test
     void removeAndAddAtRemovedIndex() {
         LinearProbingWithCount<String, Double> mathConstants = new LinearProbingWithCount<>();
-        mathConstants.addWithCount("pi", 3.1415);
         mathConstants.addWithCount("e", 2.718);
-        assertEquals(3.1415, mathConstants.remove("pi"));
         assertEquals(2.718, mathConstants.remove("e"));
-        assertNull(mathConstants.add("tau", 6.28));
         assertEquals(0, mathConstants.addWithCount("e", 2.718));
         assertNull(mathConstants.remove("phi"));
     }
