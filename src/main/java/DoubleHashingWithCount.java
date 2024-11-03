@@ -1,11 +1,11 @@
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-//TODO: NO CHANGES HAVE BEEN MADE YET, GO THROUGH THIS CLASS AND TAILOR TO YOUR NEEDS FOR THIS PROJECT
+
 public class DoubleHashingWithCount<K, V> implements DictionaryInterface<K, V>
 {
     // The dictionary:
     private int numberOfEntries;
-    private static final int DEFAULT_CAPACITY = 5;        // Must be prime
+    private static final int DEFAULT_CAPACITY = 11;        // Must be prime
     private static final int MAX_CAPACITY = 10000;
 
     // The hash table:
@@ -16,10 +16,12 @@ public class DoubleHashingWithCount<K, V> implements DictionaryInterface<K, V>
     private static final double MAX_LOAD_FACTOR = 0.5;    // Fraction of hash table that can be filled
     private final Entry<K, V> AVAILABLE = new Entry<>(null, null); // Occupies locations in the hash table in the available state (locations whose entries were removed)
 
+
     public DoubleHashingWithCount()
     {
         this(DEFAULT_CAPACITY); // Call next constructor
     } // end default constructor
+
 
     public DoubleHashingWithCount(int initialCapacity)
     {
@@ -38,6 +40,7 @@ public class DoubleHashingWithCount<K, V> implements DictionaryInterface<K, V>
         hashTable = temp;
         integrityOK = true;
     } // end constructor
+
 
     // -------------------------
 // We've added this method to display the hash table for illustration and testing
@@ -58,6 +61,11 @@ public class DoubleHashingWithCount<K, V> implements DictionaryInterface<K, V>
     } // end displayHashTable
 // -------------------------
 
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public V add(K key, V value)
     {
         checkIntegrity();
@@ -93,6 +101,14 @@ public class DoubleHashingWithCount<K, V> implements DictionaryInterface<K, V>
         } // end if
     } // end add
 
+
+    /**
+     * Adds a new entry to this dictionary. If the given search key already exists in the dictionary, it replaces the
+     * value. The number of collisions it took to successfully add the entry to the dictionary is returned.
+     * @param key An object search key of the new entry.
+     * @param value An object associated with the search key.
+     * @return number of collisions before entry was added to the dictionary
+     */
     public int addWithCount(K key, V value)
     {
         checkIntegrity();
@@ -123,6 +139,10 @@ public class DoubleHashingWithCount<K, V> implements DictionaryInterface<K, V>
         } // end if
     } // end add
 
+
+    /**
+     * {@inheritDoc}
+     */
     public V remove(K key)
     {
         checkIntegrity();
@@ -143,6 +163,10 @@ public class DoubleHashingWithCount<K, V> implements DictionaryInterface<K, V>
         return removedValue;
     } // end remove
 
+
+    /**
+     * {@inheritDoc}
+     */
     public V getValue(K key)
     {
         checkIntegrity();
@@ -158,21 +182,37 @@ public class DoubleHashingWithCount<K, V> implements DictionaryInterface<K, V>
         return result;
     } // end getValue
 
+
+    /**
+     * {@inheritDoc}
+     */
     public boolean contains(K key)
     {
         return getValue(key) != null;
     } // end contains
 
+
+    /**
+     * {@inheritDoc}
+     */
     public boolean isEmpty()
     {
         return numberOfEntries == 0;
     } // end isEmpty
 
+
+    /**
+     * {@inheritDoc}
+     */
     public int getSize()
     {
         return numberOfEntries;
     } // end getSize
 
+
+    /**
+     * {@inheritDoc}
+     */
     public final void clear()
     {
         checkIntegrity();
@@ -182,15 +222,25 @@ public class DoubleHashingWithCount<K, V> implements DictionaryInterface<K, V>
         numberOfEntries = 0;
     } // end clear
 
+
+    /**
+     * {@inheritDoc}
+     */
     public Iterator<K> getKeyIterator()
     {
         return new KeyIterator();
     } // end getKeyIterator
 
+
+    /**
+     * {@inheritDoc}
+     */
     public Iterator<V> getValueIterator()
     {
         return new ValueIterator();
     } // end getValueIterator
+
+
 
     private HashCapsule getHashIndex(K key)
     {
@@ -201,27 +251,20 @@ public class DoubleHashingWithCount<K, V> implements DictionaryInterface<K, V>
             hashIndex = hashIndex + hashTable.length;
         } // end if
 
-        int tempHashIndex = hashIndex;
-        // Check for and resolve collision
-        hashIndex = doubleHash(hashIndex, key);
+        // Check for and resolve collision. Receive collision count.
+        HashCapsule tempHashCapsule = doubleHash(hashIndex, key);
 
-        //calculate collisions
-        int collisionCount = tempHashIndex - hashIndex;
-        if (collisionCount < 0) {
-            collisionCount = (tableSize - tempHashIndex) + hashIndex;
-        }
-        HashCapsule tempCapsule = new HashCapsule(hashIndex, collisionCount);
-
-        return tempCapsule;
+        return tempHashCapsule;
     } // end getHashIndex
 
     // Precondition: checkIntegrity has been called.
-    private int doubleHash(int index, K key)
+    private HashCapsule doubleHash(int index, K key)
     {
         int PRIME = 7;
 
         int originalHashCode = index;
-        int n = 1; // number of times we've used the double hash function
+        int n = 0; // number of times we've used the double hash function,
+
 
         boolean found = false;
         int availableIndex = -1; // Index of first available location (from which an entry was removed)
@@ -233,8 +276,8 @@ public class DoubleHashingWithCount<K, V> implements DictionaryInterface<K, V>
                 if (key.equals(hashTable[index].getKey()))
                     found = true; // Key found
                 else { // DOUBLE HASH FUNCTION
-                    index = (originalHashCode + n * (PRIME - (originalHashCode % PRIME))) % hashTable.length;
                     n++; // increment the number of times we've used the double hash function.
+                    index = (originalHashCode + n * (PRIME - (originalHashCode % PRIME))) % hashTable.length;
                 }
 
             }
@@ -244,15 +287,18 @@ public class DoubleHashingWithCount<K, V> implements DictionaryInterface<K, V>
                 if (availableIndex == -1)
                     availableIndex = index;
 
-                index = (index + 1) % hashTable.length;            // Linear probing
+                // if we hit this code, then we have found another AVAILABLE entry, but we don't need to save the info,
+                // just continue to search until we find null or find the key.
+                n++; // I'm currently counting this as a collision. It won't matter for the experiment b/c we aren't removing
+                index = (originalHashCode + n * (PRIME - (originalHashCode % PRIME))) % hashTable.length;
             } // end if
         } // end while
         // Assertion: Either key or null is found at hashTable[index]
 
         if (found || (availableIndex == -1) )
-            return index;                                      // Index of either key or null
+            return new HashCapsule(index, n); // Index of either key or null and collision count
         else
-            return availableIndex;                          // Index of an available location
+            return new HashCapsule(availableIndex, n);  // Index of an available location and collision count
     } // end doubleHash
 
 
@@ -372,6 +418,9 @@ public class DoubleHashingWithCount<K, V> implements DictionaryInterface<K, V>
             throw new IllegalStateException("Dictionary has become too large.");
     } // end checkSize
 
+    /**
+     * Iterator object that iterates through the keys of this dictionary
+     */
     private class KeyIterator implements Iterator<K>
     {
         private int currentIndex; // Current position in hash table
@@ -416,6 +465,9 @@ public class DoubleHashingWithCount<K, V> implements DictionaryInterface<K, V>
         } // end remove
     } // end KeyIterator
 
+    /**
+     * Iterator object that iterates through the values of this dictionary.
+     */
     private class ValueIterator implements Iterator<V>
     {
         private int currentIndex;
@@ -460,7 +512,13 @@ public class DoubleHashingWithCount<K, V> implements DictionaryInterface<K, V>
         } // end remove
     } // end ValueIterator
 
-    protected final class Entry<K, V>
+
+    /**
+     * Object that holds the key, value pairs for this dictionary
+     * @param <K> generic of type K, for key
+     * @param <V> generic of type V, for value
+     */
+    protected static final class Entry<K, V>
     {
         private K key;
         private V value;
@@ -487,6 +545,10 @@ public class DoubleHashingWithCount<K, V> implements DictionaryInterface<K, V>
         } // end setValue
     } // end Entry
 
+
+    /**
+     * Object that holds the hashCode and collision count when an entry is added using addWithCount()
+     */
     private static class HashCapsule {
         private int hashCode;
         private int collisionCount;

@@ -1,6 +1,6 @@
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-//TODO: NO CHANGES HAVE BEEN MADE YET, GO THROUGH THIS CLASS AND TAILOR TO YOUR NEEDS FOR THIS PROJECT
+
 public class LinearProbingWithCount<K, V> implements DictionaryInterface<K, V>
 {
     // The dictionary:
@@ -17,10 +17,12 @@ public class LinearProbingWithCount<K, V> implements DictionaryInterface<K, V>
     // Occupies locations in the hash table in the available state (locations whose entries were removed)
     private final Entry<K, V> AVAILABLE = new Entry<>(null, null);
 
+
     public LinearProbingWithCount()
     {
         this(DEFAULT_CAPACITY); // Call next constructor
     } // end default constructor
+
 
     public LinearProbingWithCount(int initialCapacity)
     {
@@ -39,6 +41,7 @@ public class LinearProbingWithCount<K, V> implements DictionaryInterface<K, V>
         hashTable = temp;
         integrityOK = true;
     } // end constructor
+
 
     // -------------------------
     // We've added this method to display the hash table for illustration and testing
@@ -59,6 +62,11 @@ public class LinearProbingWithCount<K, V> implements DictionaryInterface<K, V>
     } // end displayHashTable
     // -------------------------
 
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public V add(K key, V value)
     {
         checkIntegrity();
@@ -94,6 +102,14 @@ public class LinearProbingWithCount<K, V> implements DictionaryInterface<K, V>
         } // end if
     }// end add
 
+
+    /**
+     * Adds a new entry to this dictionary. If the given search key already exists in the dictionary, it replaces the
+     * value. The number of collisions it took to successfully add the entry to the dictionary is returned.
+     * @param key An object search key of the new entry.
+     * @param value An object associated with the search key.
+     * @return number of collisions before entry was added to the dictionary
+     */
     public int addWithCount(K key, V value)
     {
         checkIntegrity();
@@ -124,6 +140,11 @@ public class LinearProbingWithCount<K, V> implements DictionaryInterface<K, V>
         } // end if
     } // end add
 
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public V remove(K key)
     {
         checkIntegrity();
@@ -144,6 +165,11 @@ public class LinearProbingWithCount<K, V> implements DictionaryInterface<K, V>
         return removedValue;
     } // end remove
 
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public V getValue(K key)
     {
         checkIntegrity();
@@ -159,21 +185,41 @@ public class LinearProbingWithCount<K, V> implements DictionaryInterface<K, V>
         return result;
     } // end getValue
 
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public boolean contains(K key)
     {
         return getValue(key) != null;
     } // end contains
 
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public boolean isEmpty()
     {
         return numberOfEntries == 0;
     } // end isEmpty
 
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public int getSize()
     {
         return numberOfEntries;
     } // end getSize
 
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public final void clear()
     {
         checkIntegrity();
@@ -183,16 +229,31 @@ public class LinearProbingWithCount<K, V> implements DictionaryInterface<K, V>
         numberOfEntries = 0;
     } // end clear
 
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public Iterator<K> getKeyIterator()
     {
         return new KeyIterator();
     } // end getKeyIterator
 
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public Iterator<V> getValueIterator()
     {
         return new ValueIterator();
     } // end getValueIterator
 
+
+    /**
+     * @param key
+     * @return
+     */
     private HashCapsule getHashIndex(K key)
     {
         int hashIndex = key.hashCode() % hashTable.length;
@@ -212,12 +273,16 @@ public class LinearProbingWithCount<K, V> implements DictionaryInterface<K, V>
         if (collisionCount < 0) {
             collisionCount = (tableSize - tempHashIndex) + hashIndex;
         }
-        HashCapsule tempCapsule = new HashCapsule(hashIndex, collisionCount);
 
-        return tempCapsule;
+        return new HashCapsule(hashIndex, collisionCount);
     } // end getHashIndex
 
 
+    /**
+     * @param index
+     * @param key
+     * @return
+     */
     // Precondition: checkIntegrity has been called.
     private int linearProbe(int index, K key)
     {
@@ -239,6 +304,8 @@ public class LinearProbingWithCount<K, V> implements DictionaryInterface<K, V>
                 if (availableIndex == -1)
                     availableIndex = index;
 
+                // if we hit this code, then we have found another AVAILABLE entry, but we don't need to save the info,
+                // just continue to search until we find null or find the key.
                 index = (index + 1) % hashTable.length;            // Linear probing
             } // end if
         } // end while
@@ -251,7 +318,9 @@ public class LinearProbingWithCount<K, V> implements DictionaryInterface<K, V>
     } // end linearProbe
 
 
-
+    /**
+     *
+     */
     // Increases the size of the hash table to a prime >= twice its old size.
     // In doing so, this method must rehash the table entries.
     // Precondition: checkIntegrity has been called.
@@ -278,6 +347,10 @@ public class LinearProbingWithCount<K, V> implements DictionaryInterface<K, V>
         } // end for
     } // end enlargeHashTable
 
+
+    /**
+     * @return
+     */
     // Returns true if lambda > MAX_LOAD_FACTOR for hash table;
     // otherwise returns false.
     private boolean isHashTableTooFull()
@@ -303,6 +376,11 @@ public class LinearProbingWithCount<K, V> implements DictionaryInterface<K, V>
         return anInteger;
     } // end getNextPrime
 
+
+    /**
+     * @param anInteger
+     * @return
+     */
     // Returns true if the given integer is prime.
     private boolean isPrime(int anInteger)
     {
@@ -340,6 +418,10 @@ public class LinearProbingWithCount<K, V> implements DictionaryInterface<K, V>
         return result;
     } // end isPrime
 
+
+    /**
+     *
+     */
     // Throws an exception if this object is not initialized.
     private void checkIntegrity()
     {
@@ -347,6 +429,11 @@ public class LinearProbingWithCount<K, V> implements DictionaryInterface<K, V>
             throw new SecurityException ("HashedDictionary object is corrupt.");
     } // end checkIntegrity
 
+
+    /**
+     * @param capacity
+     * @return
+     */
     // Ensures that the client requests a capacity
     // that is not too small or too large.
     private int checkCapacity(int capacity)
@@ -360,6 +447,10 @@ public class LinearProbingWithCount<K, V> implements DictionaryInterface<K, V>
         return capacity;
     } // end checkCapacity
 
+
+    /**
+     * @param size
+     */
     // Throws an exception if the hash table becomes too large.
     private void checkSize(int size)
     {
@@ -367,6 +458,10 @@ public class LinearProbingWithCount<K, V> implements DictionaryInterface<K, V>
             throw new IllegalStateException("Dictionary has become too large.");
     } // end checkSize
 
+
+    /**
+     * Iterator object that iterates through the keys of this dictionary
+     */
     private class KeyIterator implements Iterator<K>
     {
         private int currentIndex; // Current position in hash table
@@ -411,6 +506,10 @@ public class LinearProbingWithCount<K, V> implements DictionaryInterface<K, V>
         } // end remove
     } // end KeyIterator
 
+
+    /**
+     * Iterator object that iterates through the values of this dictionary.
+     */
     private class ValueIterator implements Iterator<V>
     {
         private int currentIndex;
@@ -455,7 +554,13 @@ public class LinearProbingWithCount<K, V> implements DictionaryInterface<K, V>
         } // end remove
     } // end ValueIterator
 
-    protected final class Entry<K, V>
+
+    /**
+     * Object that holds the key, value pairs for this dictionary
+     * @param <K> generic of type K, for key
+     * @param <V> generic of type V, for value
+     */
+    protected static final class Entry<K, V>
     {
         private K key;
         private V value;
@@ -482,6 +587,10 @@ public class LinearProbingWithCount<K, V> implements DictionaryInterface<K, V>
         } // end setValue
     } // end Entry
 
+
+    /**
+     * Object that holds the hashCode and collision count when an entry is added using addWithCount()
+     */
     private static class HashCapsule {
         private int hashCode;
         private int collisionCount;
