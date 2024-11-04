@@ -1,32 +1,57 @@
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+/**
+ * Hashed Dictionary that resolves collisions with double hashing probing. Contains extra fields and methods for
+ * counting the amount of probes done over chosen intervals of time.
+ * @param <K> generic of type K for the search key
+ * @param <V> generic of type V for the value
+ */
 public class DoubleHashingWithCount<K, V> implements DictionaryInterface<K, V>
 {
     // The dictionary:
+    /** Number of elements in the dictionary. */
     private int numberOfEntries;
-    private static final int DEFAULT_CAPACITY = 11;        // Must be prime
+    /** Default capacity of the dictionary when using empty constructor, must be prime. */
+    private static final int DEFAULT_CAPACITY = 11;
+    /** Max capacity of the dictionary. */
     private static final int MAX_CAPACITY = 10000;
 
     // The hash table:
+
+    /** Table where dictionary elements are stored. */
     private Entry<K, V>[] hashTable;
-    private int tableSize;                                // Must be prime
-    private static final int MAX_SIZE = 2 * MAX_CAPACITY; // Max size of hash table
+    /** Number of cells in the entire hashTable, must be prime */
+    private int tableSize;
+    /** Maximum size of the hashTable */
+    private static final int MAX_SIZE = 2 * MAX_CAPACITY;
+    /** Checks that nothing went wrong during hashTable initialization */
     private boolean integrityOK = false;
-    private static final double MAX_LOAD_FACTOR = 0.5;    // Fraction of hash table that can be filled
-    private final Entry<K, V> AVAILABLE = new Entry<>(null, null); // Occupies locations in the hash table in the available state (locations whose entries were removed)
+    /** Fraction of the hash table that can be filled. */
+    private static final double MAX_LOAD_FACTOR = 0.5;
+    /** Occupies locations in the hash table in the available state (locations whose entries were removed) */
+    private final Entry<K, V> AVAILABLE = new Entry<>(null, null);
 
     // With Count:
 
-    /** Number of probes total when searching with contains() */
+    /** Number of probes total when using any function that calls getHashIndex() or linearProbe() until the counter
+     * is reset using resetLinearProbe() */
     private int probeCount;
 
-    public DoubleHashingWithCount()
-    {
-        this(DEFAULT_CAPACITY); // Call next constructor
-    } // end default constructor
+
+    /**
+     * Default Constructor
+     */
+    public DoubleHashingWithCount() {
+        this(DEFAULT_CAPACITY); // Call full constructor
+    }
 
 
+    /**
+     * Full Constructor
+     * @param initialCapacity Initial capacity you want to set your hashTable at, (will change to the next highest
+     *                        prime number, if not already prime).
+     */
     public DoubleHashingWithCount(int initialCapacity)
     {
         initialCapacity = checkCapacity(initialCapacity);
@@ -40,16 +65,20 @@ public class DoubleHashingWithCount<K, V> implements DictionaryInterface<K, V>
         checkSize(tableSize); // Check that the prime size is not too large
 
         // The cast is safe because the new array contains null entries
-        @SuppressWarnings("unchecked")
-        Entry<K, V>[] temp = (Entry<K, V>[])new Entry[tableSize];
+        @SuppressWarnings({"unchecked", "rawtypes"})
+        Entry<K, V>[] temp = (Entry<K, V>[]) new Entry[tableSize];
         hashTable = temp;
         integrityOK = true;
     } // end constructor
 
 
     // -------------------------
-// We've added this method to display the hash table for illustration and testing
-// -------------------------
+    // We've added this method to display the hash table for illustration and testing
+    // -------------------------
+
+    /**
+     * Displays the hashTable.
+     */
     public void displayHashTable()
     {
         checkIntegrity();
@@ -61,31 +90,40 @@ public class DoubleHashingWithCount<K, V> implements DictionaryInterface<K, V>
                 System.out.println("available - removed state");
             else
                 System.out.println(hashTable[index].getKey() + " " + hashTable[index].getValue());
-        } // end for
+        }
         System.out.println();
     } // end displayHashTable
 // -------------------------
 
+    /**
+     * Retrieves the current probeCount
+     *
+     * @return the current probeCount
+     */
     public int getProbeCount() {
         return probeCount;
     }
 
+
+    /**
+     * resets the probeCount to 0.
+     */
     public void resetProbeCount() {
         probeCount = 0;
     }
+
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public V add(K key, V value)
-    {
+    public V add(K key, V value) {
         checkIntegrity();
         if ((key == null) || (value == null))
             throw new IllegalArgumentException("Cannot add null to a dictionary.");
         else
         {
-            V oldValue;                // Value to return
+            V oldValue; // Value to return
 
             int index = getHashIndex(key);
 
@@ -109,52 +147,14 @@ public class DoubleHashingWithCount<K, V> implements DictionaryInterface<K, V>
                 enlargeHashTable();
 
             return oldValue;
-        } // end if
-    } // end add
-
-
-//    /**
-//     * Adds a new entry to this dictionary. If the given search key already exists in the dictionary, it replaces the
-//     * value. The number of collisions it took to successfully add the entry to the dictionary is returned.
-//     * @param key An object search key of the new entry.
-//     * @param value An object associated with the search key.
-//     * @return number of collisions before entry was added to the dictionary
-//     */
-//    public int addWithCount(K key, V value)
-//    {
-//        checkIntegrity();
-//        if ((key == null) || (value == null))
-//            throw new IllegalArgumentException("Cannot add null to a dictionary.");
-//        else
-//        {
-//            int index = getHashIndex(key);
-//
-//            // Assertion: index is within legal range for hashTable
-//            assert (index >= 0) && (index < hashTable.length);
-//
-//            if ( (hashTable[index] == null) || (hashTable[index] == AVAILABLE) )
-//            { // Key not found, so insert new entry
-//                hashTable[index] = new Entry<>(key, value);
-//                numberOfEntries++;
-//            }
-//            else { // this shouldn't happen in our experiment there are no, I'll leave it for now to test for error
-//                throw new IllegalArgumentException("Duplicate Key Found. No Keys should be Duplicate in this Experiment.");
-//            }
-//
-//            // Ensure that hash table is large enough for another add
-//            if (isHashTableTooFull())
-//                enlargeHashTable();
-//
-//            return probeCount;
-//        } // end if
-//    } // end add
+        }
+    }
 
 
     /**
      * {@inheritDoc}
      */
-    public V remove(K key)
-    {
+    public V remove(K key) {
         checkIntegrity();
         V removedValue = null;
 
@@ -176,8 +176,7 @@ public class DoubleHashingWithCount<K, V> implements DictionaryInterface<K, V>
     /**
      * {@inheritDoc}
      */
-    public V getValue(K key)
-    {
+    public V getValue(K key) {
         checkIntegrity();
         V result = null;
 
@@ -194,32 +193,21 @@ public class DoubleHashingWithCount<K, V> implements DictionaryInterface<K, V>
     /**
      * {@inheritDoc}
      */
-    public boolean contains(K key)
-    {
+    public boolean contains(K key) {
         return getValue(key) != null;
     }
 
-//    /**
-//     * @param key An object search key of the desired entry.
-//     * @return number of collisions from the search
-//     */
-//    public int containsWithCount(K key)
-//    {
-//        checkIntegrity();
-//
-//        int index = getHashIndex(key);
-//
-//        if ((hashTable[index] != null) && (hashTable[index] != AVAILABLE))
-//            throw new IllegalArgumentException("We should never find key. Experiment failed."); // Key found;
-//
-//        return probeCount;
-//    } // end contains
-
-
+    /** Probably delete this
+     * @return load factor
+     */
     public double getLoadFactor() {
         return (double) numberOfEntries/hashTable.length;
     }
 
+
+    /** Probably delete this
+     * @return hash table length
+     */
     public int getHashTableSize() {
         return hashTable.length;
     }
@@ -228,39 +216,35 @@ public class DoubleHashingWithCount<K, V> implements DictionaryInterface<K, V>
     /**
      * {@inheritDoc}
      */
-    public boolean isEmpty()
-    {
+    public boolean isEmpty() {
         return numberOfEntries == 0;
-    } // end isEmpty
+    }
 
 
     /**
      * {@inheritDoc}
      */
-    public int getSize()
-    {
+    public int getSize() {
         return numberOfEntries;
-    } // end getSize
+    }
 
 
     /**
      * {@inheritDoc}
      */
-    public final void clear()
-    {
+    public final void clear() {
         checkIntegrity();
         for (int index = 0; index < hashTable.length; index++)
             hashTable[index] = null;
 
         numberOfEntries = 0;
-    } // end clear
+    }
 
 
     /**
      * {@inheritDoc}
      */
-    public Iterator<K> getKeyIterator()
-    {
+    public Iterator<K> getKeyIterator() {
         return new KeyIterator();
     } // end getKeyIterator
 
@@ -268,32 +252,37 @@ public class DoubleHashingWithCount<K, V> implements DictionaryInterface<K, V>
     /**
      * {@inheritDoc}
      */
-    public Iterator<V> getValueIterator()
-    {
+    public Iterator<V> getValueIterator() {
         return new ValueIterator();
     } // end getValueIterator
 
 
-
-    private int getHashIndex(K key)
-    {
+    /**
+     * Finds and retrieves an unused or available hashIndex for this key.
+     * @param key An object search key we want hashIndex for
+     * @return First available or unused hashIndex for this search key.
+     */
+    private int getHashIndex(K key) {
         int hashIndex = key.hashCode() % hashTable.length;
-
 
         if (hashIndex < 0)
         {
             hashIndex = hashIndex + hashTable.length;
-        } // end if
+        }
 
-        probeCount++; // the initial probe
+        probeCount++; // count initial probe
 
         // Check for and resolve collision.
-
         return getSecondHashIndex(hashIndex, key);
-    } // end getHashIndex
+    }
 
 
-    // Precondition: checkIntegrity has been called.
+    /**
+     * Check to see if the initial hashIndex is unused or available, and if it is not, finds one via double hashing.
+     * @param index the initial hashIndex for this key
+     * @param key An object search key we want hashIndex for
+     * @return the initial hashIndex if it is unused or available, or the first available or unused one.
+     */
     private int getSecondHashIndex(int index, K key)
     {
         int PRIME = 7;
@@ -313,42 +302,41 @@ public class DoubleHashingWithCount<K, V> implements DictionaryInterface<K, V>
                     probeCount++; // add to probe count every time we use the second hash function.
                 }
 
-            } else { // Skip entries that were removed (This should not happen in our experiment)!
-                // Save index of first location in removed state
+            } else { // Skip entries that were removed.
+                // Save index of first location in removed state.
                 if (availableIndex == -1) {
                     availableIndex = index;
                 }
 
-                // if we hit this code, then we have found another AVAILABLE entry, but we don't need to save the info,
+                // If we hit this code, then we have found another AVAILABLE entry, but we don't need to save the info,
                 // just continue to search until we find null or find the key. Still consider this a probe.
                 n++;
                 index = (originalHashCode + n * (PRIME - (originalHashCode % PRIME))) % hashTable.length;
                 probeCount++;
-                System.out.println("Shouldn't have come here, double");
-            } // end if
-        } // end while
-        // Assertion: Either key or null is found at hashTable[index]
+            }
+        }
 
-        if (found || (availableIndex == -1) ) {
+        // Assertion: Either key or null is found at hashTable[index]
+        if (found || (availableIndex == -1) ) { // Index of either key or null
             return index;
-        } else { // Index of either key or null
+        } else { // Index of an available location
             return availableIndex;
-        }// Index of an available location
+        }
     } // end getSecondIndexHash
 
 
-    // Increases the size of the hash table to a prime >= twice its old size.
-    // In doing so, this method must rehash the table entries.
-    // Precondition: checkIntegrity has been called.
-    private void enlargeHashTable()
-    {
+    /**
+     * Increases the size of a hash table to a prime greater than or equal to twice its old size.
+     * Then, rehashes the entries.
+     */
+    private void enlargeHashTable() {
         Entry<K, V>[] oldTable = hashTable;
         int oldSize = hashTable.length;
         int newSize = getNextPrime(oldSize + oldSize);
         checkSize(newSize); // Check that the prime size is not too large
 
         // The cast is safe because the new array contains null entries
-        @SuppressWarnings("unchecked")
+        @SuppressWarnings({"unchecked", "rawtypes"})
         Entry<K, V>[] tempTable = (Entry<K, V>[])new Entry[newSize]; // Increase size of array
         hashTable = tempTable;
         numberOfEntries = 0; // Reset number of dictionary entries, since
@@ -360,54 +348,59 @@ public class DoubleHashingWithCount<K, V> implements DictionaryInterface<K, V>
         {
             if ( (oldTable[index] != null) && (oldTable[index] != AVAILABLE) )
                 add(oldTable[index].getKey(), oldTable[index].getValue());
-        } // end for
-    } // end enlargeHashTable
+        }
+    }
 
-    // Returns true if lambda > MAX_LOAD_FACTOR for hash table;
-    // otherwise returns false.
-    private boolean isHashTableTooFull()
-    {
+
+    /**
+     * Checks if the current load factor (lambda) is greater than MAX_LOAD_FACTOR
+     * @return true if lambda is greater than MAX_LOAD_FACTOR for hash table; otherwise returns false.
+     */
+    private boolean isHashTableTooFull() {
         return numberOfEntries > MAX_LOAD_FACTOR * hashTable.length;
-    } // end isHashTableTooFull
+    }
 
-    // Returns a prime integer that is >= the given integer, but <= MAX_SIZE.
-    private int getNextPrime(int anInteger)
-    {
+
+    /**
+     * Returns a prime integer that is greater than or equal to the given integer, but less than or equal to MAX_SIZE.
+     * @param anInteger any positive integer
+     * @return a prime integer
+     */
+    private int getNextPrime(int anInteger) {
         // if even, add 1 to make odd
-        if (anInteger % 2 == 0)
-        {
+        if (anInteger % 2 == 0) {
             anInteger++;
-        } // end if
+        }
 
         // test odd integers
-        while (!isPrime(anInteger))
-        {
+        while (!isPrime(anInteger)) {
             anInteger = anInteger + 2;
-        } // end while
+        }
 
         return anInteger;
-    } // end getNextPrime
+    }
 
-    // Returns true if the given integer is prime.
-    private boolean isPrime(int anInteger)
-    {
+
+    /**
+     * Determines whether an integer is prime.
+     * @param anInteger any integer
+     * @return true if the given integer is prime, false otherwise.
+     */
+    private boolean isPrime(int anInteger) {
         boolean result;
         boolean done = false;
 
-        // 1 and even numbers are not prime
-        if ( (anInteger == 1) || (anInteger % 2 == 0) )
-        {
+        // 2 and 3 are prime
+        if  ( (anInteger == 2) || (anInteger == 3) ) {
             result = false;
         }
 
-        // 2 and 3 are prime
-        else if ( (anInteger == 2) || (anInteger == 3) )
-        {
+        // 1 and even numbers are not prime
+        else if ( (anInteger == 1) || (anInteger % 2 == 0) ) {
             result = true;
         }
 
-        else // anInteger is odd and >= 5
-        {
+        else { // anInteger is odd and >= 5
             assert (anInteger % 2 != 0) && (anInteger >= 5);
 
             // a prime is odd and not divisible by every odd integer up to its square root
@@ -418,22 +411,30 @@ public class DoubleHashingWithCount<K, V> implements DictionaryInterface<K, V>
                 {
                     result = false; // divisible; not prime
                     done = true;
-                } // end if
-            } // end for
-        } // end if
+                }
+            }
+        }
 
         return result;
     } // end isPrime
 
-    // Throws an exception if this object is not initialized.
-    private void checkIntegrity()
-    {
+
+    /**
+     * Throws an exception if this object is not initialized.
+     * @throws SecurityException if object is not initialized
+     */
+    private void checkIntegrity() {
         if (!integrityOK)
             throw new SecurityException ("HashedDictionary object is corrupt.");
-    } // end checkIntegrity
+    }
 
-    // Ensures that the client requests a capacity
-    // that is not too small or too large.
+
+    /**
+     * Ensures that the client requests a capacity that is not too small or too large.
+     * @param capacity integer capacity to check
+     * @return capacity if it's less than MAX_CAPACITY
+     * @throws IllegalStateException if there is an attempt to create a dictionary larger than MAX_CAPACITY
+     */
     private int checkCapacity(int capacity)
     {
         if (capacity < DEFAULT_CAPACITY)
@@ -443,103 +444,137 @@ public class DoubleHashingWithCount<K, V> implements DictionaryInterface<K, V>
                     "whose capacity is larger than " +
                     MAX_CAPACITY);
         return capacity;
-    } // end checkCapacity
+    }
 
-    // Throws an exception if the hash table becomes too large.
-    private void checkSize(int size)
-    {
+
+    /**
+     * Verifies size of the hashTable itself.
+     * @param size current size of hashTable
+     * @throws IllegalStateException if hashTable exceeds MAX_SIZE
+     */
+    private void checkSize(int size) {
         if (size > MAX_SIZE)
             throw new IllegalStateException("Dictionary has become too large.");
-    } // end checkSize
+    }
 
     /**
      * Iterator object that iterates through the keys of this dictionary
      */
-    private class KeyIterator implements Iterator<K>
-    {
-        private int currentIndex; // Current position in hash table
-        private int numberLeft;   // Number of entries left in iteration
+    private class KeyIterator implements Iterator<K> {
+        /** Current position in hash table */
+        private int currentIndex;
+        /** Number of entries left in iteration */
+        private int numberLeft;
 
-        private KeyIterator()
-        {
+
+        /**
+         * Default Constructor for KeyIterator
+         */
+        private KeyIterator() {
             currentIndex = 0;
             numberLeft = numberOfEntries;
-        } // end default constructor
+        }
 
-        public boolean hasNext()
-        {
+        /**
+         * Checks if there is another element in the iteration.
+         * @return True if there is another element in iteration, false otherwise.
+         */
+        public boolean hasNext() {
             return numberLeft > 0;
-        } // end hasNext
+        }
 
-        public K next()
-        {
+        /**
+         * Returns the next element in the iteration.
+         *
+         * @return The next element in the iteration.
+         * @throws NoSuchElementException If there is no next element in the ieration.
+         */
+        public K next() {
             K result = null;
 
-            if (hasNext())
-            {
+            if (hasNext()) {
                 // Skip table locations that do not contain a current entry
-                while ( (hashTable[currentIndex] == null) || hashTable[currentIndex] == AVAILABLE )
-                {
+                while ((hashTable[currentIndex] == null) || hashTable[currentIndex] == AVAILABLE) {
                     currentIndex++;
-                } // end while
+                }
 
                 result = hashTable[currentIndex].getKey();
                 numberLeft--;
                 currentIndex++;
-            }
-            else
+            } else {
                 throw new NoSuchElementException();
+            }
 
             return result;
-        } // end next
+        }
 
-        public void remove()
-        {
+        /**
+         * Remove method not supported for this iterator.
+         * @throws UnsupportedOperationException this iterator does not allow you to remove elements
+         */
+        public void remove() {
             throw new UnsupportedOperationException();
-        } // end remove
+        }
     } // end KeyIterator
 
     /**
      * Iterator object that iterates through the values of this dictionary.
      */
-    private class ValueIterator implements Iterator<V>
-    {
+    private class ValueIterator implements Iterator<V> {
+        /** Current position in hash table */
         private int currentIndex;
+        /** Number of entries left in iteration */
         private int numberLeft;
 
-        private ValueIterator()
-        {
+        /**
+         * Default Constructor for ValueIterator
+         */
+        private ValueIterator() {
             currentIndex = 0;
             numberLeft = numberOfEntries;
-        } // end default constructor
+        }
 
-        public boolean hasNext()
-        {
+
+        /**
+         * Checks if there is another element in the iteration.
+         * @return True if there is another element in iteration, false otherwise.
+         */
+        public boolean hasNext() {
             return numberLeft > 0;
-        } // end hasNext
+        }
 
+
+        /**
+         * Returns the next element in the iteration.
+         *
+         * @return The next element in the iteration.
+         * @throws NoSuchElementException If there is no next element in the ieration.
+         */
         public V next()
         {
             V result = null;
 
-            if (hasNext())
-            {
+            if (hasNext()) {
                 // Skip table locations that do not contain a current entry
-                while ( (hashTable[currentIndex] == null) || hashTable[currentIndex] == AVAILABLE )
-                {
+                while ( (hashTable[currentIndex] == null) || hashTable[currentIndex] == AVAILABLE ) {
                     currentIndex++;
                 } // end while
 
                 result = hashTable[currentIndex].getValue();
                 numberLeft--;
                 currentIndex++;
-            }
-            else
+            } else {
                 throw new NoSuchElementException();
+            }
 
             return result;
-        } // end next
+        }
 
+
+        /**
+         * Remove method not supported for this iterator.
+         * @throws UnsupportedOperationException this iterator does not allow you to remove elements
+         */
         public void remove()
         {
             throw new UnsupportedOperationException();
@@ -552,54 +587,49 @@ public class DoubleHashingWithCount<K, V> implements DictionaryInterface<K, V>
      * @param <K> generic of type K, for key
      * @param <V> generic of type V, for value
      */
-    protected static final class Entry<K, V>
-    {
+    protected static final class Entry<K, V> {
+        /** Object search key for this dictionary */
         private K key;
+        /** Value for this dictionary */
         private V value;
 
-        private Entry(K searchKey, V dataValue)
-        {
+
+        /**
+         * Full constructor for Entry
+         * @param searchKey object search key we want to store
+         * @param dataValue value we want to store with this search key
+         */
+        private Entry(K searchKey, V dataValue) {
             key = searchKey;
             value = dataValue;
-        } // end constructor
+        }
 
-        private K getKey()
-        {
+
+        /**
+         * Returns search key for this Entry.
+         * @return search key for this Entry
+         */
+        private K getKey() {
             return key;
-        } // end getKey
+        }
 
-        private V getValue()
-        {
+
+        /**
+         * Returns value for this Entry.
+         * @return Value for this Entry
+         */
+        private V getValue() {
             return value;
-        } // end getValue
+        }
 
-        private void setValue(V newValue)
-        {
+        /**
+         * sets a new value for this Entry
+         * @param newValue new value to set for this Entry
+         */
+        private void setValue(V newValue) {
             value = newValue;
-        } // end setValue
+        }
     } // end Entry
-
-
-    /**
-     * Object that holds the hashCode and collision count when an entry is added using addWithCount()
-     */
-    private static class HashCapsule {
-        private int hashCode;
-        private int collisionCount;
-
-        HashCapsule(int hashCode, int collisionCount) {
-            this.hashCode = hashCode;
-            this.collisionCount = collisionCount;
-        }
-
-        public int getHashCode() {
-            return hashCode;
-        }
-
-        public int getCollisionCount() {
-            return collisionCount;
-        }
-    }
 } // end HashedDictionary
 
 

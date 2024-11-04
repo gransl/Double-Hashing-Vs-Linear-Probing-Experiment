@@ -53,20 +53,6 @@ class LinearProbingWithCountTest {
 
     }
 
-//    @Test
-//    void addWithCount() {
-//        LinearProbingWithCount<Integer, String> lp2 = new LinearProbingWithCount<>();
-//        int count = lp2.addWithCount(5, "hooray");
-//        assertEquals(0, count);
-//        int count2 = lp2.addWithCount(16, "tortoise");
-//        assertEquals(1, count2);
-//        lp2.addWithCount(100, "what");
-//        lp2.addWithCount(202, "how");
-//        lp2.addWithCount(314, "who");
-//        assertThrows(IllegalArgumentException.class, () -> lp2.addWithCount(null,"error!"));
-//        assertThrows(IllegalArgumentException.class, () -> lp2.addWithCount(3, null));
-//    }
-
     @Test
     void remove() {
         LinearProbingWithCount<String, Double> mathConstants = new LinearProbingWithCount<>();
@@ -99,20 +85,6 @@ class LinearProbingWithCountTest {
         lp3.resetProbeCount();
         assertEquals(0, lp3.getProbeCount());
     }
-
-//    @Test
-//    void containsWithCount() {
-//        LinearProbingWithCount<Integer, String> lp3 = new LinearProbingWithCount<>();
-//        lp3.addWithCount(2, "two");
-//        assertThrows(IllegalArgumentException.class, () -> lp3.containsWithCount(2));
-//        assertEquals(0, lp3.containsWithCount(3));
-//        assertEquals(1, lp3.containsWithCount(13));
-//        lp3.addWithCount(13, "thirteen");
-//        assertEquals(2, lp3.containsWithCount(24));
-//        lp3.addWithCount(24, "twenty-four");
-//        assertEquals(3, lp3.containsWithCount(35));
-//    }
-
 
     @Test
     void isEmpty() {

@@ -74,6 +74,6 @@ class GetStatisticsTest {
         GetStatistics testStat = new GetStatistics();
         int[] testArray = {2,4,4,4,5,5,7,9};
         double expected = Math.sqrt(32.0/7.0);
-        assertEquals(expected, testStat.computeStandardDeviation(5, testArray));
+        assertEquals(expected, testStat.computeStandardDeviation(testArray));
     }
 }
