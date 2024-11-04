@@ -14,17 +14,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class LinearProbingWithCountTest {
 
-    @Test
-    void defaultConstructor() {
-
-
-    }
-
-    @Test
-    void constructor() {
-
-    }
-
     /**
      * I learned how to test print methods in this way from this StackOverflow post:
      * https://stackoverflow.com/questions/32241057/how-to-test-a-print-method-in-java-using-junit
@@ -32,8 +21,8 @@ class LinearProbingWithCountTest {
     @Test
     void displayHashTable() {
         LinearProbingWithCount<String, Double> mathConstants = new LinearProbingWithCount<>();
-        mathConstants.addWithCount("pi", 3.1415);
-        mathConstants.addWithCount("e", 2.718);
+        mathConstants.add("pi", 3.1415);
+        mathConstants.add("e", 2.718);
         mathConstants.add("tau", 6.28);
 
         ByteArrayOutputStream outContent = new ByteArrayOutputStream();
@@ -64,51 +53,72 @@ class LinearProbingWithCountTest {
 
     }
 
-    @Test
-    void addWithCount() {
-        LinearProbingWithCount<Integer, String> lp2 = new LinearProbingWithCount<>();
-        int count = lp2.addWithCount(5, "hooray");
-        assertEquals(0, count);
-        int count2 = lp2.addWithCount(16, "tortoise");
-        assertEquals(1, count2);
-        lp2.addWithCount(100, "what");
-        lp2.addWithCount(202, "how");
-        lp2.addWithCount(314, "who");
-        assertThrows(IllegalArgumentException.class, () -> lp2.addWithCount(null,"error!"));
-        assertThrows(IllegalArgumentException.class, () -> lp2.addWithCount(3, null));
-    }
+//    @Test
+//    void addWithCount() {
+//        LinearProbingWithCount<Integer, String> lp2 = new LinearProbingWithCount<>();
+//        int count = lp2.addWithCount(5, "hooray");
+//        assertEquals(0, count);
+//        int count2 = lp2.addWithCount(16, "tortoise");
+//        assertEquals(1, count2);
+//        lp2.addWithCount(100, "what");
+//        lp2.addWithCount(202, "how");
+//        lp2.addWithCount(314, "who");
+//        assertThrows(IllegalArgumentException.class, () -> lp2.addWithCount(null,"error!"));
+//        assertThrows(IllegalArgumentException.class, () -> lp2.addWithCount(3, null));
+//    }
 
     @Test
-    void removeAndAddAtRemovedIndex() {
+    void remove() {
         LinearProbingWithCount<String, Double> mathConstants = new LinearProbingWithCount<>();
-        mathConstants.addWithCount("e", 2.718);
+        mathConstants.add("e", 2.718);
         assertEquals(2.718, mathConstants.remove("e"));
-        assertEquals(0, mathConstants.addWithCount("e", 2.718));
+        assertFalse(mathConstants.contains("e"));
         assertNull(mathConstants.remove("phi"));
     }
 
     @Test
     void getValueAndContains() {
         LinearProbingWithCount<String, Double> mathConstants = new LinearProbingWithCount<>();
-        mathConstants.addWithCount("phi", 1.6180);
+        mathConstants.add("phi", 1.6180);
         assertEquals(1.6180, mathConstants.getValue("phi"));
         assertNull(mathConstants.getValue("pi"));
     }
 
     @Test
-    void contains() {
-        LinearProbingWithCount<String, Double> mathConstants = new LinearProbingWithCount<>();
-        mathConstants.addWithCount("phi", 1.6180);
-        assertTrue(mathConstants.contains("phi"));
-        assertFalse(mathConstants.contains("pi"));
+    void containsAndProbeCount() {
+        DoubleHashingWithCount<Integer, String> lp3 = new DoubleHashingWithCount<>();
+        assertEquals(0, lp3.getProbeCount());
+        lp3.add(2, "two");
+        lp3.resetProbeCount();
+        assertTrue(lp3.contains(2));
+        assertEquals(1, lp3.getProbeCount());
+        assertFalse(lp3.contains(13));
+        assertEquals(3, lp3.getProbeCount());
+        assertFalse(lp3.contains(4));
+        assertEquals(4, lp3.getProbeCount());
+        lp3.resetProbeCount();
+        assertEquals(0, lp3.getProbeCount());
     }
+
+//    @Test
+//    void containsWithCount() {
+//        LinearProbingWithCount<Integer, String> lp3 = new LinearProbingWithCount<>();
+//        lp3.addWithCount(2, "two");
+//        assertThrows(IllegalArgumentException.class, () -> lp3.containsWithCount(2));
+//        assertEquals(0, lp3.containsWithCount(3));
+//        assertEquals(1, lp3.containsWithCount(13));
+//        lp3.addWithCount(13, "thirteen");
+//        assertEquals(2, lp3.containsWithCount(24));
+//        lp3.addWithCount(24, "twenty-four");
+//        assertEquals(3, lp3.containsWithCount(35));
+//    }
 
 
     @Test
     void isEmpty() {
         LinearProbingWithCount<String, String> emptyDictionary = new LinearProbingWithCount<>();
         assertTrue(emptyDictionary.isEmpty());
-        emptyDictionary.addWithCount("thunder", "lightning");
+        emptyDictionary.add("thunder", "lightning");
         assertFalse(emptyDictionary.isEmpty());
     }
 
@@ -116,8 +126,8 @@ class LinearProbingWithCountTest {
     void getSize() {
         LinearProbingWithCount<String, Double> mathConstants = new LinearProbingWithCount<>();
         assertEquals(0, mathConstants.getSize());
-        mathConstants.addWithCount("pi", 3.1415);
-        mathConstants.addWithCount("e", 2.718);
+        mathConstants.add("pi", 3.1415);
+        mathConstants.add("e", 2.718);
         assertEquals(2, mathConstants.getSize());
         mathConstants.add("tau", 6.28);
         mathConstants.add("phi", 1.6180);
@@ -130,8 +140,8 @@ class LinearProbingWithCountTest {
     @Test
     void clear() {
         LinearProbingWithCount<String, Double> mathConstants = new LinearProbingWithCount<>();
-        mathConstants.addWithCount("pi", 3.1415);
-        mathConstants.addWithCount("e", 2.718);
+        mathConstants.add("pi", 3.1415);
+        mathConstants.add("e", 2.718);
         mathConstants.add("tau", 6.28);
         mathConstants.add("phi", 1.6180);
         mathConstants.add("Catalan", 0.91596);
@@ -142,44 +152,44 @@ class LinearProbingWithCountTest {
 
     @Test
     void getKeyIterator() {
-        LinearProbingWithCount<String, Double> mathConstants = new LinearProbingWithCount<>();
-        mathConstants.addWithCount("pi", 3.1415);
-        mathConstants.addWithCount("e", 2.718);
-        mathConstants.add("tau", 6.28);
-        mathConstants.add("phi", 1.6180);
-        mathConstants.addWithCount("Catalan", 0.91596);
-        mathConstants.addWithCount("Fibonacci", 3.3599);
-        mathConstants.remove("Fibonacci");
-        Iterator<String> mcIterator = mathConstants.getKeyIterator();
+        LinearProbingWithCount<Integer, String> lp4 = new LinearProbingWithCount<>();
+        lp4.add(2, "two");
+        lp4.add(5, "five");
+        lp4.add(1, "one");
+        lp4.add(3, "three");
+        lp4.add(7, "seven");
+        lp4.add(10, "ten");
+        lp4.remove(5);
+        Iterator<Integer> mcIterator = lp4.getKeyIterator();
         assertTrue(mcIterator.hasNext());
-        assertEquals("e", mcIterator.next());
-        assertEquals("phi", mcIterator.next());
-        assertEquals("pi", mcIterator.next());
+        assertEquals(1, mcIterator.next());
+        assertEquals(2, mcIterator.next());
+        assertEquals(3, mcIterator.next());
         assertThrows(UnsupportedOperationException.class, () -> mcIterator.remove());
-        assertEquals("tau", mcIterator.next());
-        assertEquals("Catalan", mcIterator.next());
+        assertEquals(7, mcIterator.next());
+        assertEquals(10, mcIterator.next());
         assertThrows(NoSuchElementException.class, () -> mcIterator.next());
         assertFalse(mcIterator.hasNext());
     }
 
     @Test
     void getValueIterator() {
-        LinearProbingWithCount<String, Double> mathConstants = new LinearProbingWithCount<>();
-        mathConstants.addWithCount("pi", 3.1415);
-        mathConstants.addWithCount("e", 2.718);
-        mathConstants.add("tau", 6.28);
-        mathConstants.add("phi", 1.6180);
-        mathConstants.addWithCount("Catalan", 0.91596);
-        mathConstants.addWithCount("Fibonacci", 3.3599);
-        mathConstants.remove("Fibonacci");
-        Iterator<Double> mcIterator = mathConstants.getValueIterator();
+        LinearProbingWithCount<Integer, String> lp5 = new LinearProbingWithCount<>();
+        lp5.add(2, "two");
+        lp5.add(5, "five");
+        lp5.add(1, "one");
+        lp5.add(3, "three");
+        lp5.add(7, "seven");
+        lp5.add(10, "ten");
+        lp5.remove(5);
+        Iterator<String> mcIterator = lp5.getValueIterator();
         assertTrue(mcIterator.hasNext());
-        assertEquals(2.718, mcIterator.next());
-        assertEquals(1.6180, mcIterator.next());
-        assertEquals(3.1415, mcIterator.next());
+        assertEquals("one", mcIterator.next());
+        assertEquals("two", mcIterator.next());
+        assertEquals("three", mcIterator.next());
         assertThrows(UnsupportedOperationException.class, () -> mcIterator.remove());
-        assertEquals(6.28, mcIterator.next());
-        assertEquals(0.91596, mcIterator.next());
+        assertEquals("seven", mcIterator.next());
+        assertEquals("ten", mcIterator.next());
         assertThrows(NoSuchElementException.class, () -> mcIterator.next());
         assertFalse(mcIterator.hasNext());
     }

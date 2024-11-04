@@ -16,6 +16,10 @@ public class DoubleHashingWithCount<K, V> implements DictionaryInterface<K, V>
     private static final double MAX_LOAD_FACTOR = 0.5;    // Fraction of hash table that can be filled
     private final Entry<K, V> AVAILABLE = new Entry<>(null, null); // Occupies locations in the hash table in the available state (locations whose entries were removed)
 
+    // With Count:
+
+    /** Number of probes total when searching with contains() */
+    private int probeCount;
 
     public DoubleHashingWithCount()
     {
@@ -27,11 +31,12 @@ public class DoubleHashingWithCount<K, V> implements DictionaryInterface<K, V>
     {
         initialCapacity = checkCapacity(initialCapacity);
         numberOfEntries = 0;    // Dictionary is empty
+        probeCount = 0; // No searches have been done yet
 
         // Set up hash table:
         // Initial size of hash table is same as initialCapacity if it is prime;
         // otherwise increase it until it is prime size
-        int tableSize = getNextPrime(initialCapacity);
+        tableSize = getNextPrime(initialCapacity);
         checkSize(tableSize); // Check that the prime size is not too large
 
         // The cast is safe because the new array contains null entries
@@ -61,6 +66,13 @@ public class DoubleHashingWithCount<K, V> implements DictionaryInterface<K, V>
     } // end displayHashTable
 // -------------------------
 
+    public int getProbeCount() {
+        return probeCount;
+    }
+
+    public void resetProbeCount() {
+        probeCount = 0;
+    }
 
     /**
      * {@inheritDoc}
@@ -75,8 +87,7 @@ public class DoubleHashingWithCount<K, V> implements DictionaryInterface<K, V>
         {
             V oldValue;                // Value to return
 
-            HashCapsule tempCapsule = getHashIndex(key);
-            int index = tempCapsule.getHashCode();
+            int index = getHashIndex(key);
 
             // Assertion: index is within legal range for hashTable
             assert (index >= 0) && (index < hashTable.length);
@@ -102,42 +113,41 @@ public class DoubleHashingWithCount<K, V> implements DictionaryInterface<K, V>
     } // end add
 
 
-    /**
-     * Adds a new entry to this dictionary. If the given search key already exists in the dictionary, it replaces the
-     * value. The number of collisions it took to successfully add the entry to the dictionary is returned.
-     * @param key An object search key of the new entry.
-     * @param value An object associated with the search key.
-     * @return number of collisions before entry was added to the dictionary
-     */
-    public int addWithCount(K key, V value)
-    {
-        checkIntegrity();
-        if ((key == null) || (value == null))
-            throw new IllegalArgumentException("Cannot add null to a dictionary.");
-        else
-        {
-            HashCapsule tempCapsule = getHashIndex(key);
-            int index = tempCapsule.getHashCode();
-
-            // Assertion: index is within legal range for hashTable
-            assert (index >= 0) && (index < hashTable.length);
-
-            if ( (hashTable[index] == null) || (hashTable[index] == AVAILABLE) )
-            { // Key not found, so insert new entry
-                hashTable[index] = new Entry<>(key, value);
-                numberOfEntries++;
-            }
-            else { // this shouldn't happen in our experiment there are no, I'll leave it for now to test for error
-                throw new IllegalArgumentException("Duplicate Key Found. No Keys should be Duplicate in this Experiment.");
-            }
-
-            // Ensure that hash table is large enough for another add
-            if (isHashTableTooFull())
-                enlargeHashTable();
-
-            return tempCapsule.getCollisionCount();
-        } // end if
-    } // end add
+//    /**
+//     * Adds a new entry to this dictionary. If the given search key already exists in the dictionary, it replaces the
+//     * value. The number of collisions it took to successfully add the entry to the dictionary is returned.
+//     * @param key An object search key of the new entry.
+//     * @param value An object associated with the search key.
+//     * @return number of collisions before entry was added to the dictionary
+//     */
+//    public int addWithCount(K key, V value)
+//    {
+//        checkIntegrity();
+//        if ((key == null) || (value == null))
+//            throw new IllegalArgumentException("Cannot add null to a dictionary.");
+//        else
+//        {
+//            int index = getHashIndex(key);
+//
+//            // Assertion: index is within legal range for hashTable
+//            assert (index >= 0) && (index < hashTable.length);
+//
+//            if ( (hashTable[index] == null) || (hashTable[index] == AVAILABLE) )
+//            { // Key not found, so insert new entry
+//                hashTable[index] = new Entry<>(key, value);
+//                numberOfEntries++;
+//            }
+//            else { // this shouldn't happen in our experiment there are no, I'll leave it for now to test for error
+//                throw new IllegalArgumentException("Duplicate Key Found. No Keys should be Duplicate in this Experiment.");
+//            }
+//
+//            // Ensure that hash table is large enough for another add
+//            if (isHashTableTooFull())
+//                enlargeHashTable();
+//
+//            return probeCount;
+//        } // end if
+//    } // end add
 
 
     /**
@@ -148,8 +158,7 @@ public class DoubleHashingWithCount<K, V> implements DictionaryInterface<K, V>
         checkIntegrity();
         V removedValue = null;
 
-        HashCapsule tempCapsule = getHashIndex(key);
-        int index = tempCapsule.getHashCode();
+        int index = getHashIndex(key);
 
         if ((hashTable[index] != null) && (hashTable[index] != AVAILABLE))
         {
@@ -172,8 +181,7 @@ public class DoubleHashingWithCount<K, V> implements DictionaryInterface<K, V>
         checkIntegrity();
         V result = null;
 
-        HashCapsule tempCapsule = getHashIndex(key);
-        int index = tempCapsule.getHashCode();
+        int index = getHashIndex(key);
 
         if ((hashTable[index] != null) && (hashTable[index] != AVAILABLE))
             result = hashTable[index].getValue(); // Key found; get value
@@ -189,7 +197,32 @@ public class DoubleHashingWithCount<K, V> implements DictionaryInterface<K, V>
     public boolean contains(K key)
     {
         return getValue(key) != null;
-    } // end contains
+    }
+
+//    /**
+//     * @param key An object search key of the desired entry.
+//     * @return number of collisions from the search
+//     */
+//    public int containsWithCount(K key)
+//    {
+//        checkIntegrity();
+//
+//        int index = getHashIndex(key);
+//
+//        if ((hashTable[index] != null) && (hashTable[index] != AVAILABLE))
+//            throw new IllegalArgumentException("We should never find key. Experiment failed."); // Key found;
+//
+//        return probeCount;
+//    } // end contains
+
+
+    public double getLoadFactor() {
+        return (double) numberOfEntries/hashTable.length;
+    }
+
+    public int getHashTableSize() {
+        return hashTable.length;
+    }
 
 
     /**
@@ -242,65 +275,66 @@ public class DoubleHashingWithCount<K, V> implements DictionaryInterface<K, V>
 
 
 
-    private HashCapsule getHashIndex(K key)
+    private int getHashIndex(K key)
     {
         int hashIndex = key.hashCode() % hashTable.length;
+
 
         if (hashIndex < 0)
         {
             hashIndex = hashIndex + hashTable.length;
         } // end if
 
-        // Check for and resolve collision. Receive collision count.
-        HashCapsule tempHashCapsule = doubleHash(hashIndex, key);
+        probeCount++; // the initial probe
 
-        return tempHashCapsule;
+        // Check for and resolve collision.
+
+        return getSecondHashIndex(hashIndex, key);
     } // end getHashIndex
 
+
     // Precondition: checkIntegrity has been called.
-    private HashCapsule doubleHash(int index, K key)
+    private int getSecondHashIndex(int index, K key)
     {
         int PRIME = 7;
-
         int originalHashCode = index;
-        int n = 0; // number of times we've used the double hash function,
-
+        int n = 0; // number of times we've used the double hash function, or seen an AVAILABLE entry.
 
         boolean found = false;
         int availableIndex = -1; // Index of first available location (from which an entry was removed)
 
-        while ( !found && (hashTable[index] != null) )
-        {
-            if (hashTable[index] != AVAILABLE)
-            {
-                if (key.equals(hashTable[index].getKey()))
+        while ( !found && (hashTable[index] != null) ) {
+            if (hashTable[index] != AVAILABLE) {
+                if (key.equals(hashTable[index].getKey())) {
                     found = true; // Key found
-                else { // DOUBLE HASH FUNCTION
+                } else { // DOUBLE HASH FUNCTION
                     n++; // increment the number of times we've used the double hash function.
                     index = (originalHashCode + n * (PRIME - (originalHashCode % PRIME))) % hashTable.length;
+                    probeCount++; // add to probe count every time we use the second hash function.
                 }
 
-            }
-            else // Skip entries that were removed (Shouldn't happen for experiment)
-            {
+            } else { // Skip entries that were removed (This should not happen in our experiment)!
                 // Save index of first location in removed state
-                if (availableIndex == -1)
+                if (availableIndex == -1) {
                     availableIndex = index;
+                }
 
                 // if we hit this code, then we have found another AVAILABLE entry, but we don't need to save the info,
-                // just continue to search until we find null or find the key.
-                n++; // I'm currently counting this as a collision. It won't matter for the experiment b/c we aren't removing
+                // just continue to search until we find null or find the key. Still consider this a probe.
+                n++;
                 index = (originalHashCode + n * (PRIME - (originalHashCode % PRIME))) % hashTable.length;
+                probeCount++;
+                System.out.println("Shouldn't have come here, double");
             } // end if
         } // end while
         // Assertion: Either key or null is found at hashTable[index]
 
-        if (found || (availableIndex == -1) )
-            return new HashCapsule(index, n); // Index of either key or null and collision count
-        else
-            return new HashCapsule(availableIndex, n);  // Index of an available location and collision count
-    } // end doubleHash
-
+        if (found || (availableIndex == -1) ) {
+            return index;
+        } else { // Index of either key or null
+            return availableIndex;
+        }// Index of an available location
+    } // end getSecondIndexHash
 
 
     // Increases the size of the hash table to a prime >= twice its old size.

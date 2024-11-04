@@ -21,8 +21,8 @@ class DoubleHashingWithCountTest {
     @Test
     void displayHashTable() {
         DoubleHashingWithCount<String, Double> mathConstants = new DoubleHashingWithCount<>();
-        mathConstants.addWithCount("pi", 3.1415);
-        mathConstants.addWithCount("e", 2.718);
+        mathConstants.add("pi", 3.1415);
+        mathConstants.add("e", 2.718);
         mathConstants.add("tau", 6.28);
 
         ByteArrayOutputStream outContent = new ByteArrayOutputStream();
@@ -55,52 +55,72 @@ class DoubleHashingWithCountTest {
 
     }
 
-    @Test
-    void addWithCount() {
-        DoubleHashingWithCount<Integer, String> lp2 = new DoubleHashingWithCount<>();
-        int count = lp2.addWithCount(5, "hooray");
-        assertEquals(0, count);
-        int count2 = lp2.addWithCount(16, "tortoise");
-        assertEquals(1, count2);
-        lp2.addWithCount(100, "what");
-        lp2.addWithCount(202, "how");
-        lp2.addWithCount(314, "who");
-        assertThrows(IllegalArgumentException.class, () -> lp2.addWithCount(null,"error!"));
-        assertThrows(IllegalArgumentException.class, () -> lp2.addWithCount(3, null));
-    }
+//    @Test
+//    void addWithCount() {
+//        DoubleHashingWithCount<Integer, String> lp2 = new DoubleHashingWithCount<>();
+//        int count = lp2.addWithCount(5, "hooray");
+//        assertEquals(0, count);
+//        int count2 = lp2.addWithCount(16, "tortoise");
+//        assertEquals(1, count2);
+//        lp2.addWithCount(100, "what");
+//        lp2.addWithCount(202, "how");
+//        lp2.addWithCount(314, "who");
+//        assertThrows(IllegalArgumentException.class, () -> lp2.addWithCount(null,"error!"));
+//        assertThrows(IllegalArgumentException.class, () -> lp2.addWithCount(3, null));
+//    }
 
     @Test
-    void removeAndAddAtRemovedIndex() {
+    void remove() {
         DoubleHashingWithCount<String, Double> mathConstants = new DoubleHashingWithCount<>();
-        mathConstants.addWithCount("e", 2.718);
+        mathConstants.add("e", 2.718);
         assertEquals(2.718, mathConstants.remove("e"));
-        //Two collisions b/c I'm currently counting having to check Available nodes as collisions.
-        assertEquals(1, mathConstants.addWithCount("e", 2.718));
+        assertFalse(mathConstants.contains("e"));
         assertNull(mathConstants.remove("phi"));
     }
 
     @Test
     void getValueAndContains() {
         DoubleHashingWithCount<String, Double> mathConstants = new DoubleHashingWithCount<>();
-        mathConstants.addWithCount("phi", 1.6180);
+        mathConstants.add("phi", 1.6180);
         assertEquals(1.6180, mathConstants.getValue("phi"));
         assertNull(mathConstants.getValue("pi"));
     }
 
     @Test
-    void contains() {
-        DoubleHashingWithCount<String, Double> mathConstants = new DoubleHashingWithCount<>();
-        mathConstants.addWithCount("phi", 1.6180);
-        assertTrue(mathConstants.contains("phi"));
-        assertFalse(mathConstants.contains("pi"));
+    void containsAndProbeCount() {
+        DoubleHashingWithCount<Integer, String> dh3 = new DoubleHashingWithCount<>();
+        assertEquals(0, dh3.getProbeCount());
+        dh3.add(2, "two");
+        dh3.resetProbeCount();
+        assertTrue(dh3.contains(2));
+        assertEquals(1, dh3.getProbeCount());
+        assertFalse(dh3.contains(13));
+        assertEquals(3, dh3.getProbeCount());
+        assertFalse(dh3.contains(4));
+        assertEquals(4, dh3.getProbeCount());
+        dh3.resetProbeCount();
+        assertEquals(0, dh3.getProbeCount());
     }
+
+//    @Test
+//    void containsWithCount() {
+//        DoubleHashingWithCount<Integer, String> lp3 = new DoubleHashingWithCount<>();
+//        lp3.addWithCount(2, "two");
+//        assertThrows(IllegalArgumentException.class, () -> lp3.containsWithCount(2));
+//        assertEquals(0, lp3.containsWithCount(3));
+//        assertEquals(1, lp3.containsWithCount(13));
+//        lp3.addWithCount(13, "thirteen");
+//        assertEquals(2, lp3.containsWithCount(24));
+//        lp3.addWithCount(24, "twenty-four");
+//        assertEquals(3, lp3.containsWithCount(35));
+//    }
 
 
     @Test
     void isEmpty() {
         DoubleHashingWithCount<String, String> emptyDictionary = new DoubleHashingWithCount<>();
         assertTrue(emptyDictionary.isEmpty());
-        emptyDictionary.addWithCount("thunder", "lightning");
+        emptyDictionary.add("thunder", "lightning");
         assertFalse(emptyDictionary.isEmpty());
     }
 
@@ -108,8 +128,8 @@ class DoubleHashingWithCountTest {
     void getSize() {
         DoubleHashingWithCount<String, Double> mathConstants = new DoubleHashingWithCount<>();
         assertEquals(0, mathConstants.getSize());
-        mathConstants.addWithCount("pi", 3.1415);
-        mathConstants.addWithCount("e", 2.718);
+        mathConstants.add("pi", 3.1415);
+        mathConstants.add("e", 2.718);
         assertEquals(2, mathConstants.getSize());
         mathConstants.add("tau", 6.28);
         mathConstants.add("phi", 1.6180);
@@ -122,8 +142,8 @@ class DoubleHashingWithCountTest {
     @Test
     void clear() {
         DoubleHashingWithCount<String, Double> mathConstants = new DoubleHashingWithCount<>();
-        mathConstants.addWithCount("pi", 3.1415);
-        mathConstants.addWithCount("e", 2.718);
+        mathConstants.add("pi", 3.1415);
+        mathConstants.add("e", 2.718);
         mathConstants.add("tau", 6.28);
         mathConstants.add("phi", 1.6180);
         mathConstants.add("Catalan", 0.91596);
@@ -134,44 +154,44 @@ class DoubleHashingWithCountTest {
 
     @Test
     void getKeyIterator() {
-        DoubleHashingWithCount<String, Double> mathConstants = new DoubleHashingWithCount<>();
-        mathConstants.addWithCount("pi", 3.1415);
-        mathConstants.addWithCount("e", 2.718);
-        mathConstants.add("tau", 6.28);
-        mathConstants.add("phi", 1.6180);
-        mathConstants.addWithCount("Catalan", 0.91596);
-        mathConstants.addWithCount("Fibonacci", 3.3599);
-        mathConstants.remove("Fibonacci");
-        Iterator<String> mcIterator = mathConstants.getKeyIterator();
+        DoubleHashingWithCount<Integer, String> dh4 = new DoubleHashingWithCount<>();
+        dh4.add(2, "two");
+        dh4.add(5, "five");
+        dh4.add(1, "one");
+        dh4.add(3, "three");
+        dh4.add(7, "seven");
+        dh4.add(10, "ten");
+        dh4.remove(5);
+        Iterator<Integer> mcIterator = dh4.getKeyIterator();
         assertTrue(mcIterator.hasNext());
-        assertEquals("phi", mcIterator.next());
-        assertEquals("pi", mcIterator.next());
-        assertEquals("tau", mcIterator.next());
+        assertEquals(1, mcIterator.next());
+        assertEquals(2, mcIterator.next());
+        assertEquals(3, mcIterator.next());
         assertThrows(UnsupportedOperationException.class, () -> mcIterator.remove());
-        assertEquals("e", mcIterator.next());
-        assertEquals("Catalan", mcIterator.next());
+        assertEquals(7, mcIterator.next());
+        assertEquals(10, mcIterator.next());
         assertThrows(NoSuchElementException.class, () -> mcIterator.next());
         assertFalse(mcIterator.hasNext());
     }
 
     @Test
     void getValueIterator() {
-        DoubleHashingWithCount<String, Double> mathConstants = new DoubleHashingWithCount<>();
-        mathConstants.addWithCount("pi", 3.1415);
-        mathConstants.addWithCount("e", 2.718);
-        mathConstants.add("tau", 6.28);
-        mathConstants.add("phi", 1.6180);
-        mathConstants.addWithCount("Catalan", 0.91596);
-        mathConstants.addWithCount("Fibonacci", 3.3599);
-        mathConstants.remove("Fibonacci");
-        Iterator<Double> mcIterator = mathConstants.getValueIterator();
+        DoubleHashingWithCount<Integer, String> dh5 = new DoubleHashingWithCount<>();
+        dh5.add(2, "two");
+        dh5.add(5, "five");
+        dh5.add(1, "one");
+        dh5.add(3, "three");
+        dh5.add(7, "seven");
+        dh5.add(10, "ten");
+        dh5.remove(5);
+        Iterator<String> mcIterator = dh5.getValueIterator();
         assertTrue(mcIterator.hasNext());
-        assertEquals(1.6180, mcIterator.next());
-        assertEquals(3.1415, mcIterator.next());
-        assertEquals(6.28, mcIterator.next());
+        assertEquals("one", mcIterator.next());
+        assertEquals("two", mcIterator.next());
+        assertEquals("three", mcIterator.next());
         assertThrows(UnsupportedOperationException.class, () -> mcIterator.remove());
-        assertEquals(2.718, mcIterator.next());
-        assertEquals(0.91596, mcIterator.next());
+        assertEquals("seven", mcIterator.next());
+        assertEquals("ten", mcIterator.next());
         assertThrows(NoSuchElementException.class, () -> mcIterator.next());
         assertFalse(mcIterator.hasNext());
     }

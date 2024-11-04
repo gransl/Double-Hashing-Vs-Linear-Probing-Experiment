@@ -17,6 +17,10 @@ public class LinearProbingWithCount<K, V> implements DictionaryInterface<K, V>
     // Occupies locations in the hash table in the available state (locations whose entries were removed)
     private final Entry<K, V> AVAILABLE = new Entry<>(null, null);
 
+    //With Probe:
+
+    /** Number of probes total when searching with contains() */
+    private int probeCount;
 
     public LinearProbingWithCount()
     {
@@ -28,6 +32,7 @@ public class LinearProbingWithCount<K, V> implements DictionaryInterface<K, V>
     {
         initialCapacity = checkCapacity(initialCapacity);
         numberOfEntries = 0;    // Dictionary is empty
+        probeCount = 0; //No searches have been done yet
 
         // Set up hash table:
         // Initial size of hash table is same as initialCapacity if it is prime;
@@ -62,6 +67,14 @@ public class LinearProbingWithCount<K, V> implements DictionaryInterface<K, V>
     } // end displayHashTable
     // -------------------------
 
+    public int getProbeCount() {
+        return probeCount;
+    }
+
+    public void resetProbeCount() {
+        probeCount = 0;
+    }
+
 
     /**
      * {@inheritDoc}
@@ -76,8 +89,7 @@ public class LinearProbingWithCount<K, V> implements DictionaryInterface<K, V>
         {
             V oldValue; // Value to return
 
-            HashCapsule tempCapsule = getHashIndex(key);
-            int index = tempCapsule.getHashCode();
+            int index = getHashIndex(key);
 
             // Assertion: index is within legal range for hashTable
             assert (index >= 0) && (index < hashTable.length);
@@ -95,50 +107,50 @@ public class LinearProbingWithCount<K, V> implements DictionaryInterface<K, V>
             } // end if
 
             // Ensure that hash table is large enough for another add
-            if (isHashTableTooFull())
-                enlargeHashTable();
+        //    if (isHashTableTooFull())
+        //        enlargeHashTable();
 
             return oldValue;
         } // end if
     }// end add
 
 
-    /**
-     * Adds a new entry to this dictionary. If the given search key already exists in the dictionary, it replaces the
-     * value. The number of collisions it took to successfully add the entry to the dictionary is returned.
-     * @param key An object search key of the new entry.
-     * @param value An object associated with the search key.
-     * @return number of collisions before entry was added to the dictionary
-     */
-    public int addWithCount(K key, V value)
-    {
-        checkIntegrity();
-        if ((key == null) || (value == null))
-            throw new IllegalArgumentException("Cannot add null to a dictionary.");
-        else
-        {
-            HashCapsule tempCapsule = getHashIndex(key);
-            int index = tempCapsule.getHashCode();
-
-            // Assertion: index is within legal range for hashTable
-            assert (index >= 0) && (index < hashTable.length);
-
-            if ( (hashTable[index] == null) || (hashTable[index] == AVAILABLE) )
-            { // Key not found, so insert new entry
-                hashTable[index] = new Entry<>(key, value);
-                numberOfEntries++;
-            }
-            else { // this shouldn't happen in our experiment there are no, I'll leave it for now to test for error
-                throw new IllegalArgumentException("Duplicate Key Found. No Keys should be Duplicate in this Experiment.");
-            }
-
-            // Ensure that hash table is large enough for another add
-            if (isHashTableTooFull())
-                enlargeHashTable();
-
-            return tempCapsule.getCollisionCount();
-        } // end if
-    } // end add
+//    /**
+//     * Adds a new entry to this dictionary. If the given search key already exists in the dictionary, it replaces the
+//     * value. The number of collisions it took to successfully add the entry to the dictionary is returned.
+//     * @param key An object search key of the new entry.
+//     * @param value An object associated with the search key.
+//     * @return number of collisions before entry was added to the dictionary
+//     */
+//    public int addWithCount(K key, V value)
+//    {
+//        checkIntegrity();
+//        if ((key == null) || (value == null))
+//            throw new IllegalArgumentException("Cannot add null to a dictionary.");
+//        else
+//        {
+//            int index = getHashIndex(key);
+//
+//
+//            // Assertion: index is within legal range for hashTable
+//            assert (index >= 0) && (index < hashTable.length);
+//
+//            if ( (hashTable[index] == null) || (hashTable[index] == AVAILABLE) )
+//            { // Key not found, so insert new entry
+//                hashTable[index] = new Entry<>(key, value);
+//                numberOfEntries++;
+//            }
+//            else { // this shouldn't happen in our experiment there are no, I'll leave it for now to test for error
+//                throw new IllegalArgumentException("Duplicate Key Found. No Keys should be Duplicate in this Experiment.");
+//            }
+//
+//            // Ensure that hash table is large enough for another add
+//        //    if (isHashTableTooFull())
+//        //        enlargeHashTable();
+//
+//            return probeCount;
+//        } // end if
+//    } // end add
 
 
     /**
@@ -150,8 +162,7 @@ public class LinearProbingWithCount<K, V> implements DictionaryInterface<K, V>
         checkIntegrity();
         V removedValue = null;
 
-        HashCapsule tempCapsule = getHashIndex(key);
-        int index = tempCapsule.getHashCode();
+        int index = getHashIndex(key);
 
         if ((hashTable[index] != null) && (hashTable[index] != AVAILABLE))
         {
@@ -175,8 +186,7 @@ public class LinearProbingWithCount<K, V> implements DictionaryInterface<K, V>
         checkIntegrity();
         V result = null;
 
-        HashCapsule tempCapsule = getHashIndex(key);
-        int index = tempCapsule.getHashCode();
+        int index = getHashIndex(key);
 
         if ((hashTable[index] != null) && (hashTable[index] != AVAILABLE))
             result = hashTable[index].getValue(); // Key found; get value
@@ -194,6 +204,31 @@ public class LinearProbingWithCount<K, V> implements DictionaryInterface<K, V>
     {
         return getValue(key) != null;
     } // end contains
+
+//    /**
+//     * @param key An object search key of the desired entry.
+//     * @return number of collisions from the search
+//     */
+//    public int containsWithCount(K key)
+//    {
+//        checkIntegrity();
+//
+//        int index = getHashIndex(key);
+//
+//
+//        if ((hashTable[index] != null) && (hashTable[index] != AVAILABLE))
+//            throw new IllegalArgumentException("We should never find key. Experiment failed."); // Key found;
+//
+//        return probeCount;
+//    }
+
+    public double getLoadFactor() {
+        return (double) numberOfEntries/hashTable.length;
+    }
+
+    public int getHashTableSize() {
+        return hashTable.length;
+    }
 
 
     /**
@@ -254,7 +289,7 @@ public class LinearProbingWithCount<K, V> implements DictionaryInterface<K, V>
      * @param key
      * @return
      */
-    private HashCapsule getHashIndex(K key)
+    private int getHashIndex(K key)
     {
         int hashIndex = key.hashCode() % hashTable.length;
 
@@ -263,18 +298,12 @@ public class LinearProbingWithCount<K, V> implements DictionaryInterface<K, V>
             hashIndex = hashIndex + hashTable.length;
         } // end if
 
-        int tempHashIndex = hashIndex;
+        probeCount++; // initial probe
+
         // Check for and resolve collision
-        hashIndex = linearProbe(hashIndex, key);
         // hashIndex = quadraticProbe(hashIndex, key);
 
-        //calculate collisions
-        int collisionCount = tempHashIndex - hashIndex;
-        if (collisionCount < 0) {
-            collisionCount = (tableSize - tempHashIndex) + hashIndex;
-        }
-
-        return new HashCapsule(hashIndex, collisionCount);
+        return linearProbe(hashIndex, key);
     } // end getHashIndex
 
 
@@ -293,28 +322,33 @@ public class LinearProbingWithCount<K, V> implements DictionaryInterface<K, V>
         {
             if (hashTable[index] != AVAILABLE)
             {
-                if (key.equals(hashTable[index].getKey()))
+                if (key.equals(hashTable[index].getKey())) {
                     found = true; // Key found
-                else             // Follow probe sequence
-                    index = (index + 1) % hashTable.length;         // Linear probing
+                } else { // Follow probe sequence
+                    index = (index + 1) % hashTable.length; // Linear probing
+                    probeCount++; // add to probe count for every linear probe we do.
+                }
             }
-            else // Skip entries that were removed
-            {
+            else { // Skip entries that were removed (This should not happen in our experiment)!
                 // Save index of first location in removed state
-                if (availableIndex == -1)
+                if (availableIndex == -1) {
                     availableIndex = index;
+                }
 
                 // if we hit this code, then we have found another AVAILABLE entry, but we don't need to save the info,
-                // just continue to search until we find null or find the key.
-                index = (index + 1) % hashTable.length;            // Linear probing
+                // just continue to search until we find null or find the key. Still consider this a probe.
+                index = (index + 1) % hashTable.length; // Linear probing
+                probeCount++;
+                System.out.println("Shouldn't have come here, linear");
             } // end if
         } // end while
         // Assertion: Either key or null is found at hashTable[index]
 
-        if (found || (availableIndex == -1) )
-            return index;                                      // Index of either key or null
-        else
-            return availableIndex;                          // Index of an available location
+        if (found || (availableIndex == -1) ) {
+            return index;
+        } else { // Index of either key or null
+            return availableIndex;
+        }// Index of an available location
     } // end linearProbe
 
 
@@ -588,26 +622,26 @@ public class LinearProbingWithCount<K, V> implements DictionaryInterface<K, V>
     } // end Entry
 
 
-    /**
-     * Object that holds the hashCode and collision count when an entry is added using addWithCount()
-     */
-    private static class HashCapsule {
-        private int hashCode;
-        private int collisionCount;
-
-        HashCapsule(int hashCode, int collisionCount) {
-            this.hashCode = hashCode;
-            this.collisionCount = collisionCount;
-        }
-
-        public int getHashCode() {
-            return hashCode;
-        }
-
-        public int getCollisionCount() {
-            return collisionCount;
-        }
-    }
+//    /**
+//     * Object that holds the hashCode and collision count when an entry is added using addWithCount()
+//     */
+//    private static class HashCapsule {
+//        private int hashCode;
+//        private int collisionCount;
+//
+//        HashCapsule(int hashCode, int collisionCount) {
+//            this.hashCode = hashCode;
+//            this.collisionCount = collisionCount;
+//        }
+//
+//        public int getHashCode() {
+//            return hashCode;
+//        }
+//
+//        public int getCollisionCount() {
+//            return collisionCount;
+//        }
+//    }
 } // end HashedDictionary
 
 
