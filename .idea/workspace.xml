@@ -104,7 +104,7 @@
       <recent name="" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.LinearProbingWithCountTest">
+  <component name="RunManager" selected="Application.Main">
     <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="Main" />
       <module name="AD325_P2_Hashing" />
@@ -243,11 +243,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.Main" />
         <item itemvalue="JUnit.LinearProbingWithCountTest" />
         <item itemvalue="JUnit.GetStatisticsTest" />
         <item itemvalue="JUnit.DoubleHashingWithCountTest" />
         <item itemvalue="JUnit.All in AD325_P2_Hashing" />
-        <item itemvalue="Application.Main" />
       </list>
     </recent_temporary>
   </component>
