@@ -5,13 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="76c921b6-5770-4947-bc67-cae5318a862d" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/uml_diagram/Project_2_UML_LinearProbeDoubleHashing.pdf" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/AD325_P2_Hashing/DoubleHashingWithCount.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/AD325_P2_Hashing/DoubleHashingWithCount.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/AD325_P2_Hashing/DoubleHashingWithCountTest.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/test/AD325_P2_Hashing/DoubleHashingWithCountTest.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/DoubleHashingWithCount.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/DoubleHashingWithCount.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/DoubleHashingWithCountTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/DoubleHashingWithCountTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/uml_diagram/Project 2_UML_LinearProbingDoubleHashing.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/AD325_P2_Hashing/Project 2_UML_LinearProbingDoubleHashing.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Main.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -46,7 +42,7 @@
     "JUnit.All in AD325_P2_Hashing.executor": "Run",
     "JUnit.DoubleHashingWithCountTest.containsAndProbeCount.executor": "Coverage",
     "JUnit.DoubleHashingWithCountTest.containsWithCount.executor": "Run",
-    "JUnit.DoubleHashingWithCountTest.executor": "Coverage",
+    "JUnit.DoubleHashingWithCountTest.executor": "Run",
     "JUnit.DoubleHashingWithCountTest.remove.executor": "Run",
     "JUnit.GetStatisticsTest.calculateLinearCapacity.executor": "Run",
     "JUnit.GetStatisticsTest.executor": "Coverage",
@@ -89,7 +85,7 @@
       <recent name="" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.DoubleHashingWithCountTest">
+  <component name="RunManager" selected="Application.Main">
     <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="Main" />
       <module name="AD325_P2_Hashing" />
@@ -228,8 +224,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="JUnit.DoubleHashingWithCountTest" />
         <item itemvalue="Application.Main" />
+        <item itemvalue="JUnit.DoubleHashingWithCountTest" />
         <item itemvalue="JUnit.LinearProbingWithCountTest" />
         <item itemvalue="JUnit.GetStatisticsTest" />
         <item itemvalue="JUnit.All in AD325_P2_Hashing" />
