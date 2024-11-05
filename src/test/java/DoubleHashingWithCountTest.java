@@ -186,4 +186,10 @@ class DoubleHashingWithCountTest {
         DoubleHashingWithCount<Integer, String> dh7 = new DoubleHashingWithCount<>();
         assertEquals(11, dh7.getHashTableSize());
     }
+
+    @Test
+    void coPrime(){
+        DoubleHashingWithCount<String, Double> dh7 = new DoubleHashingWithCount<>(300);
+        assertEquals(7, dh7.findCoPrime());
+    }
 }

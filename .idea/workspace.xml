@@ -5,28 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="76c921b6-5770-4947-bc67-cae5318a862d" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/uml_diagram/Project 2_UML_LinearProbingDoubleHashing.pdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/uml_diagram/Project_2_UML_LinearProbeDoubleHashing.pdf" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/AD325_P2_Hashing/DoubleHashingWithCount$Entry.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/AD325_P2_Hashing/DoubleHashingWithCount$Entry.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/AD325_P2_Hashing/DoubleHashingWithCount$KeyIterator.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/AD325_P2_Hashing/DoubleHashingWithCount$KeyIterator.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/AD325_P2_Hashing/DoubleHashingWithCount$ValueIterator.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/AD325_P2_Hashing/DoubleHashingWithCount$ValueIterator.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/AD325_P2_Hashing/DoubleHashingWithCount.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/AD325_P2_Hashing/DoubleHashingWithCount.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/AD325_P2_Hashing/GetStatistics.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/AD325_P2_Hashing/GetStatistics.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/AD325_P2_Hashing/LinearProbingWithCount$Entry.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/AD325_P2_Hashing/LinearProbingWithCount$Entry.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/AD325_P2_Hashing/LinearProbingWithCount$KeyIterator.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/AD325_P2_Hashing/LinearProbingWithCount$KeyIterator.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/AD325_P2_Hashing/LinearProbingWithCount$ValueIterator.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/AD325_P2_Hashing/LinearProbingWithCount$ValueIterator.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/AD325_P2_Hashing/LinearProbingWithCount.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/AD325_P2_Hashing/LinearProbingWithCount.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/AD325_P2_Hashing/Main.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/AD325_P2_Hashing/Main.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/test/AD325_P2_Hashing/DoubleHashingWithCountTest.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/test/AD325_P2_Hashing/DoubleHashingWithCountTest.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/AD325_P2_Hashing/GetStatisticsTest.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/test/AD325_P2_Hashing/GetStatisticsTest.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/AD325_P2_Hashing/LinearProbingWithCountTest.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/test/AD325_P2_Hashing/LinearProbingWithCountTest.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/DoubleHashingWithCount.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/DoubleHashingWithCount.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/GetStatistics.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/GetStatistics.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/LinearProbingWithCount.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/LinearProbingWithCount.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Main.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/java/DoubleHashingWithCountTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/DoubleHashingWithCountTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/GetStatisticsTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/GetStatisticsTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/LinearProbingWithCountTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/LinearProbingWithCountTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/uml_diagram/Project 2_UML_LinearProbingDoubleHashing.pdf" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -77,7 +62,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary": "JUnit5",
     "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5": "",
-    "git-widget-placeholder": "SDfix-and-code-cleanup",
+    "git-widget-placeholder": "main",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "/Users/ren/Documents/CS/AD325/AD325_P2_Hashing",
     "node.js.detected.package.eslint": "true",
@@ -104,7 +89,7 @@
       <recent name="" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.Main">
+  <component name="RunManager" selected="JUnit.DoubleHashingWithCountTest">
     <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="Main" />
       <module name="AD325_P2_Hashing" />
@@ -243,10 +228,10 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.DoubleHashingWithCountTest" />
         <item itemvalue="Application.Main" />
         <item itemvalue="JUnit.LinearProbingWithCountTest" />
         <item itemvalue="JUnit.GetStatisticsTest" />
-        <item itemvalue="JUnit.DoubleHashingWithCountTest" />
         <item itemvalue="JUnit.All in AD325_P2_Hashing" />
       </list>
     </recent_temporary>
@@ -297,7 +282,7 @@
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/AD325_P2_Hashing$LinearProbingWithCountTest_removeAndAddAtRemovedIndex.ic" NAME="LinearProbingWithCountTest.removeAndAddAtRemovedIndex Coverage Results" MODIFIED="1730655699584" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true" />
     <SUITE FILE_PATH="coverage/AD325_P2_Hashing$LinearProbingWithCountTest_add.ic" NAME="LinearProbingWithCountTest.add Coverage Results" MODIFIED="1730590947493" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true" />
-    <SUITE FILE_PATH="coverage/AD325_P2_Hashing$DoubleHashingWithCountTest.ic" NAME="DoubleHashingWithCountTest Coverage Results" MODIFIED="1730796827214" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true" />
+    <SUITE FILE_PATH="coverage/AD325_P2_Hashing$DoubleHashingWithCountTest.ic" NAME="DoubleHashingWithCountTest Coverage Results" MODIFIED="1730829894973" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true" />
     <SUITE FILE_PATH="coverage/AD325_P2_Hashing$GetStatisticsTest.ic" NAME="GetStatisticsTest Coverage Results" MODIFIED="1730796836899" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true" />
     <SUITE FILE_PATH="coverage/AD325_P2_Hashing$LinearProbingWithCountTest_constructor.ic" NAME="LinearProbingWithCountTest.constructor Coverage Results" MODIFIED="1730667284265" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true" />
     <SUITE FILE_PATH="coverage/AD325_P2_Hashing$DoubleHashingWithCountTest_containsAndProbeCount.ic" NAME="DoubleHashingWithCountTest.containsAndProbeCount Coverage Results" MODIFIED="1730704329005" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true" />

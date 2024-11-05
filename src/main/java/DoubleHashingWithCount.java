@@ -363,7 +363,7 @@ public class DoubleHashingWithCount<K, V> implements DictionaryInterface<K, V>
      * Returns an integer that is coprime to the size of the hashTable, prioritizes choosing a prime number first.
      * @return an integer that is coprime to the size of the hashTable
      */
-    private int findCoPrime() {
+    public int findCoPrime() {
         //first try to find a prime that is coprime
         int testPrime = 5;
         while (testPrime < tableSize) {
