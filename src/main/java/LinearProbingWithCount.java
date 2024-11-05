@@ -3,7 +3,8 @@ import java.util.NoSuchElementException;
 
 /**
  * Hashed Dictionary that resolves collisions with linear probing. Contains extra fields and methods for counting
- * the amount of probes done over chosen intervals of time.
+ * the amount of probes done over chosen intervals of time. Because this dictionary can be used for experiments it
+ * does not require initial hashTable size to be prime, but will rehash to prime sizes.
  * @param <K> generic of type K for the search key
  * @param <V> generic of type V for the value
  */
@@ -13,7 +14,7 @@ public class LinearProbingWithCount<K, V> implements DictionaryInterface<K, V>
 
     /** Number of elements in the dictionary. */
     private int numberOfEntries;
-    /** Default capacity of the dictionary when using empty constructor, must be prime. */
+    /** Default capacity of the dictionary when using empty constructor*/
     private static final int DEFAULT_CAPACITY = 11;
     /** Max capacity of the dictionary. */
     private static final int MAX_CAPACITY = 10000;
@@ -22,7 +23,7 @@ public class LinearProbingWithCount<K, V> implements DictionaryInterface<K, V>
 
     /** Table where dictionary elements are stored. */
     private Entry<K, V>[] hashTable;
-    /** Number of cells in the entire hashTable, must be prime */
+    /** Number of cells in the entire hashTable */
     private int tableSize;
     /** Maximum size of the hashTable */
     private static final int MAX_SIZE = 2 * MAX_CAPACITY;
@@ -61,10 +62,8 @@ public class LinearProbingWithCount<K, V> implements DictionaryInterface<K, V>
         probeCount = 0;  // No searches have been done yet
 
         // Set up hash table:
-        // Initial size of hash table is same as initialCapacity if it is prime;
-        // otherwise increase it until it is prime size
-        int tableSize = getNextPrime(initialCapacity);
-        checkSize(tableSize); // Check that the prime size is not too large
+        tableSize = initialCapacity;
+        checkSize(tableSize); // Check that the size is not too large
 
         // The cast is safe because the new array contains null entries
         @SuppressWarnings({"unchecked", "rawtypes"})
@@ -282,9 +281,6 @@ public class LinearProbingWithCount<K, V> implements DictionaryInterface<K, V>
         probeCount++; // count initial probe
 
         // Check for and resolve collision
-        // TODO: REMOVE THIS IF YOU DONT USE IT
-        // hashIndex = quadraticProbe(hashIndex, key);
-
         return linearProbe(hashIndex, key);
     }
 
@@ -341,6 +337,7 @@ public class LinearProbingWithCount<K, V> implements DictionaryInterface<K, V>
         int oldSize = hashTable.length;
         int newSize = getNextPrime(oldSize + oldSize);
         checkSize(newSize); // Check that the prime size is not too large
+        tableSize = newSize;
 
         // The cast is safe because the new array contains null entries
         @SuppressWarnings({"unchecked", "rawtypes"})
@@ -397,9 +394,8 @@ public class LinearProbingWithCount<K, V> implements DictionaryInterface<K, V>
      */
     private boolean isPrime(int anInteger) {
         boolean result;
-        boolean done = false;
 
-         // 2 and 3 are prime
+        // 2 and 3 are prime
         if ( (anInteger == 2) || (anInteger == 3) ) {
             result = false;
         }
@@ -416,12 +412,11 @@ public class LinearProbingWithCount<K, V> implements DictionaryInterface<K, V>
 
             // a prime is odd and not divisible by every odd integer up to its square root
             result = true; // assume prime
-            for (int divisor = 3; !done && (divisor * divisor <= anInteger); divisor = divisor + 2)
+            for (int divisor = 3; divisor * divisor <= anInteger; divisor = divisor + 2)
             {
-                if (anInteger % divisor == 0)
-                {
+                if (anInteger % divisor == 0) {
                     result = false; // divisible; not prime
-                    done = true;
+                    break;
                 }
             }
         }
@@ -502,10 +497,10 @@ public class LinearProbingWithCount<K, V> implements DictionaryInterface<K, V>
          * Returns the next element in the iteration.
          *
          * @return The next element in the iteration.
-         * @throws NoSuchElementException If there is no next element in the ieration.
+         * @throws NoSuchElementException If there is no next element in the iteration.
          */
         public K next() {
-            K result = null;
+            K result;
 
             if (hasNext()) {
                 // Skip table locations that do not contain a current entry
@@ -567,11 +562,11 @@ public class LinearProbingWithCount<K, V> implements DictionaryInterface<K, V>
          * Returns the next element in the iteration.
          *
          * @return The next element in the iteration.
-         * @throws NoSuchElementException If there is no next element in the ieration.
+         * @throws NoSuchElementException If there is no next element in the iteration.
          */
         public V next()
         {
-            V result = null;
+            V result;
 
             if (hasNext())
             {
@@ -611,7 +606,7 @@ public class LinearProbingWithCount<K, V> implements DictionaryInterface<K, V>
     protected static final class Entry<K, V>
     {
         /** Object search key for this dictionary */
-        private K key;
+        private final K key;
         /** Value for this dictionary */
         private V value;
 
@@ -637,7 +632,7 @@ public class LinearProbingWithCount<K, V> implements DictionaryInterface<K, V>
 
 
         /**
-         * REturns the Value for this Entryl
+         * Returns the Value for this Entry.
          * @return Value for this Entry
          */
         private V getValue() {

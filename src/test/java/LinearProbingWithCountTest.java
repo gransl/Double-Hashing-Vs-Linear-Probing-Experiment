@@ -72,7 +72,7 @@ class LinearProbingWithCountTest {
 
     @Test
     void containsAndProbeCount() {
-        DoubleHashingWithCount<Integer, String> lp3 = new DoubleHashingWithCount<>();
+        LinearProbingWithCount<Integer, String> lp3 = new LinearProbingWithCount<>();
         assertEquals(0, lp3.getProbeCount());
         lp3.add(2, "two");
         lp3.resetProbeCount();
@@ -166,4 +166,21 @@ class LinearProbingWithCountTest {
         assertFalse(mcIterator.hasNext());
     }
 
+    @Test
+    void getLoadFactor() {
+        LinearProbingWithCount<Integer, String> lp6 = new LinearProbingWithCount<>();
+        lp6.add(2, "two");
+        lp6.add(5, "five");
+        lp6.add(1, "one");
+        lp6.add(3, "three");
+        lp6.add(7, "seven");
+        double expectedValue = 5.0/11.0;
+        assertEquals(expectedValue, lp6.getLoadFactor());
+    }
+
+    @Test
+    void getHashTableSize() {
+        LinearProbingWithCount<Integer, String> lp7 = new LinearProbingWithCount<>();
+        assertEquals(11, lp7.getHashTableSize());
+    }
 }

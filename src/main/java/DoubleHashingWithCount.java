@@ -3,7 +3,8 @@ import java.util.NoSuchElementException;
 
 /**
  * Hashed Dictionary that resolves collisions with double hashing probing. Contains extra fields and methods for
- * counting the amount of probes done over chosen intervals of time.
+ * counting the amount of probes done over chosen intervals of time. Because this dictionary can be used for experiments it
+ *  does not require initial hashTable size to be prime, but will rehash to prime sizes.
  * @param <K> generic of type K for the search key
  * @param <V> generic of type V for the value
  */
@@ -32,8 +33,13 @@ public class DoubleHashingWithCount<K, V> implements DictionaryInterface<K, V>
     /** Occupies locations in the hash table in the available state (locations whose entries were removed) */
     private final Entry<K, V> AVAILABLE = new Entry<>(null, null);
 
-    // With Count:
 
+    //Double Hash:
+
+    /** The prime that is used during the double hash sequence*/
+    private int doubleHashPrime;
+
+    // With Count:
     /** Number of probes total when using any function that calls getHashIndex() or linearProbe() until the counter
      * is reset using resetLinearProbe() */
     private int probeCount;
@@ -43,26 +49,53 @@ public class DoubleHashingWithCount<K, V> implements DictionaryInterface<K, V>
      * Default Constructor
      */
     public DoubleHashingWithCount() {
-        this(DEFAULT_CAPACITY); // Call full constructor
+        this(DEFAULT_CAPACITY, 7); // Call full constructor
     }
 
-
     /**
-     * Full Constructor
+     * Partial Constructor - lets you set initial capacity and picks a double hash prime that is coprime to your
+     * initial capacity.
+     *
      * @param initialCapacity Initial capacity you want to set your hashTable at, (will change to the next highest
      *                        prime number, if not already prime).
      */
-    public DoubleHashingWithCount(int initialCapacity)
-    {
+    public DoubleHashingWithCount(int initialCapacity) {
         initialCapacity = checkCapacity(initialCapacity);
+        doubleHashPrime = findCoPrime();
         numberOfEntries = 0;    // Dictionary is empty
         probeCount = 0; // No searches have been done yet
 
         // Set up hash table:
-        // Initial size of hash table is same as initialCapacity if it is prime;
-        // otherwise increase it until it is prime size
-        tableSize = getNextPrime(initialCapacity);
-        checkSize(tableSize); // Check that the prime size is not too large
+        tableSize = initialCapacity;
+        checkSize(tableSize);
+
+        // The cast is safe because the new array contains null entries
+        @SuppressWarnings({"unchecked", "rawtypes"})
+        Entry<K, V>[] temp = (Entry<K, V>[]) new Entry[tableSize];
+        hashTable = temp;
+        integrityOK = true;
+    }
+
+
+
+        /**
+         * Full Constructor - lets you set an initial capacity and lets you pick your own initial doubleHashPrime, will
+         * change at rehash.
+         * @param initialCapacity Initial capacity you want to set your hashTable at, (will change to the next highest
+         *                        prime number, if not already prime).
+         * @param doubleHashPrime Sets the prime number in the doubleHashFunction, only use for experimental
+         *                        purposes! Best to have both this number and table size be prime!
+         */
+    public DoubleHashingWithCount(int initialCapacity, int doubleHashPrime)
+    {
+        initialCapacity = checkCapacity(initialCapacity);
+        this.doubleHashPrime = doubleHashPrime;
+        numberOfEntries = 0;    // Dictionary is empty
+        probeCount = 0; // No searches have been done yet
+
+        // Set up hash table:
+        tableSize = initialCapacity;
+        checkSize(tableSize);
 
         // The cast is safe because the new array contains null entries
         @SuppressWarnings({"unchecked", "rawtypes"})
@@ -197,7 +230,7 @@ public class DoubleHashingWithCount<K, V> implements DictionaryInterface<K, V>
         return getValue(key) != null;
     }
 
-    /** Probably delete this
+    /** Returns the current load factor of the dictionary
      * @return load factor
      */
     public double getLoadFactor() {
@@ -205,7 +238,7 @@ public class DoubleHashingWithCount<K, V> implements DictionaryInterface<K, V>
     }
 
 
-    /** Probably delete this
+    /** Returns the size of the hash table
      * @return hash table length
      */
     public int getHashTableSize() {
@@ -285,7 +318,6 @@ public class DoubleHashingWithCount<K, V> implements DictionaryInterface<K, V>
      */
     private int getSecondHashIndex(int index, K key)
     {
-        int PRIME = 7;
         int originalHashCode = index;
         int n = 0; // number of times we've used the double hash function, or seen an AVAILABLE entry.
 
@@ -293,12 +325,13 @@ public class DoubleHashingWithCount<K, V> implements DictionaryInterface<K, V>
         int availableIndex = -1; // Index of first available location (from which an entry was removed)
 
         while ( !found && (hashTable[index] != null) ) {
+            //System.out.println("index " + index + " hashCode " + key.hashCode() + " numberOfEntries " + numberOfEntries + " hashTable.length " + hashTable.length + " n " + n + " found " + found);
             if (hashTable[index] != AVAILABLE) {
                 if (key.equals(hashTable[index].getKey())) {
                     found = true; // Key found
                 } else { // DOUBLE HASH FUNCTION
                     n++; // increment the number of times we've used the double hash function.
-                    index = (originalHashCode + n * (PRIME - (originalHashCode % PRIME))) % hashTable.length;
+                    index = ( originalHashCode + n * ( doubleHashPrime - (key.hashCode() % doubleHashPrime) ) ) % hashTable.length;
                     probeCount++; // add to probe count every time we use the second hash function.
                 }
 
@@ -311,7 +344,8 @@ public class DoubleHashingWithCount<K, V> implements DictionaryInterface<K, V>
                 // If we hit this code, then we have found another AVAILABLE entry, but we don't need to save the info,
                 // just continue to search until we find null or find the key. Still consider this a probe.
                 n++;
-                index = (originalHashCode + n * (PRIME - (originalHashCode % PRIME))) % hashTable.length;
+                index = (originalHashCode + n * (doubleHashPrime - (key.hashCode() % doubleHashPrime))) % hashTable.length;
+
                 probeCount++;
             }
         }
@@ -326,6 +360,37 @@ public class DoubleHashingWithCount<K, V> implements DictionaryInterface<K, V>
 
 
     /**
+     * Returns an integer that is coprime to the size of the hashTable, prioritizes choosing a prime number first.
+     * @return an integer that is coprime to the size of the hashTable
+     */
+    private int findCoPrime() {
+        //first try to find a prime that is coprime
+        int testPrime = 5;
+        while (testPrime < tableSize) {
+            testPrime = testPrime + 2;
+            if (isPrime(testPrime)) {
+                if (tableSize % testPrime != 0) {
+                    return testPrime;
+                }
+
+            }
+        }
+        //if that fails then try to find any number that is coprime
+        int testComposite = 4;
+        while (testComposite < tableSize) {
+            testComposite = testComposite + 2;
+            for (int i=3; i < testComposite; i++) {
+                if (tableSize % i != 0 && testComposite % i != 0) {
+                    return testComposite;
+                }
+            }
+        }
+        return testComposite;
+    }
+
+
+
+    /**
      * Increases the size of a hash table to a prime greater than or equal to twice its old size.
      * Then, rehashes the entries.
      */
@@ -334,6 +399,8 @@ public class DoubleHashingWithCount<K, V> implements DictionaryInterface<K, V>
         int oldSize = hashTable.length;
         int newSize = getNextPrime(oldSize + oldSize);
         checkSize(newSize); // Check that the prime size is not too large
+        tableSize = newSize;
+        doubleHashPrime = findCoPrime();
 
         // The cast is safe because the new array contains null entries
         @SuppressWarnings({"unchecked", "rawtypes"})
@@ -388,7 +455,6 @@ public class DoubleHashingWithCount<K, V> implements DictionaryInterface<K, V>
      */
     private boolean isPrime(int anInteger) {
         boolean result;
-        boolean done = false;
 
         // 2 and 3 are prime
         if  ( (anInteger == 2) || (anInteger == 3) ) {
@@ -405,12 +471,11 @@ public class DoubleHashingWithCount<K, V> implements DictionaryInterface<K, V>
 
             // a prime is odd and not divisible by every odd integer up to its square root
             result = true; // assume prime
-            for (int divisor = 3; !done && (divisor * divisor <= anInteger); divisor = divisor + 2)
+            for (int divisor = 3; divisor * divisor <= anInteger; divisor = divisor + 2)
             {
-                if (anInteger % divisor == 0)
-                {
+                if (anInteger % divisor == 0) {
                     result = false; // divisible; not prime
-                    done = true;
+                    break;
                 }
             }
         }
@@ -487,10 +552,10 @@ public class DoubleHashingWithCount<K, V> implements DictionaryInterface<K, V>
          * Returns the next element in the iteration.
          *
          * @return The next element in the iteration.
-         * @throws NoSuchElementException If there is no next element in the ieration.
+         * @throws NoSuchElementException If there is no next element in the iteration.
          */
         public K next() {
-            K result = null;
+            K result;
 
             if (hasNext()) {
                 // Skip table locations that do not contain a current entry
@@ -548,11 +613,11 @@ public class DoubleHashingWithCount<K, V> implements DictionaryInterface<K, V>
          * Returns the next element in the iteration.
          *
          * @return The next element in the iteration.
-         * @throws NoSuchElementException If there is no next element in the ieration.
+         * @throws NoSuchElementException If there is no next element in the iteration.
          */
         public V next()
         {
-            V result = null;
+            V result;
 
             if (hasNext()) {
                 // Skip table locations that do not contain a current entry
@@ -589,7 +654,7 @@ public class DoubleHashingWithCount<K, V> implements DictionaryInterface<K, V>
      */
     protected static final class Entry<K, V> {
         /** Object search key for this dictionary */
-        private K key;
+        private final K key;
         /** Value for this dictionary */
         private V value;
 

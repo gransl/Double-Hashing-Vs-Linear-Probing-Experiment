@@ -23,17 +23,17 @@ class DoubleHashingWithCountTest {
         DoubleHashingWithCount<String, Double> mathConstants = new DoubleHashingWithCount<>();
         mathConstants.add("pi", 3.1415);
         mathConstants.add("e", 2.718);
-        mathConstants.add("tau", 6.28);
+
 
         ByteArrayOutputStream outContent = new ByteArrayOutputStream();
         System.setOut(new PrintStream(outContent));
         mathConstants.displayHashTable();
 
-        String expectedOutput = "null \n" + "tau 6.28\n" + "pi 3.1415\n" + "null \n" +
-                "null \n" +
+        String expectedOutput = "null \n" + "null \n"  + "pi 3.1415\n" + "null \n" +
                 "null \n" +
                 "null \n" +
                 "e 2.718\n" +
+                "null \n" +
                 "null \n" +
                 "null \n" +
                 "null \n\n";
@@ -42,16 +42,16 @@ class DoubleHashingWithCountTest {
 
     @Test
     void add() {
-        DoubleHashingWithCount<String, String> lp1 = new DoubleHashingWithCount<>();
-        String str = lp1.add("hello", "goodbye");
+        DoubleHashingWithCount<String, String> dh1 = new DoubleHashingWithCount<>();
+        String str = dh1.add("hello", "goodbye");
         assertNull(str);
-        String str2 = lp1.add("hello", "farewell");
+        String str2 = dh1.add("hello", "farewell");
         assertEquals(str2, "goodbye");
-        lp1.add("str3", "what");
-        lp1.add("str4", "how");
-        lp1.add("str5", "who");
-        assertThrows(IllegalArgumentException.class, () -> lp1.add(null,"error!"));
-        assertThrows(IllegalArgumentException.class, () -> lp1.add("error!", null));
+        dh1.add("str3", "what");
+        dh1.add("str4", "how");
+        dh1.add("str5", "who");
+        assertThrows(IllegalArgumentException.class, () -> dh1.add(null,"error!"));
+        assertThrows(IllegalArgumentException.class, () -> dh1.add("error!", null));
 
     }
 
@@ -169,4 +169,21 @@ class DoubleHashingWithCountTest {
         assertFalse(mcIterator.hasNext());
     }
 
+    @Test
+    void getLoadFactor() {
+        DoubleHashingWithCount<Integer, String> dh6 = new DoubleHashingWithCount<>();
+        dh6.add(2, "two");
+        dh6.add(5, "five");
+        dh6.add(1, "one");
+        dh6.add(3, "three");
+        dh6.add(7, "seven");
+        double expectedValue = 5.0/11.0;
+        assertEquals(expectedValue, dh6.getLoadFactor());
+    }
+
+    @Test
+    void getHashTableSize() {
+        DoubleHashingWithCount<Integer, String> dh7 = new DoubleHashingWithCount<>();
+        assertEquals(11, dh7.getHashTableSize());
+    }
 }
