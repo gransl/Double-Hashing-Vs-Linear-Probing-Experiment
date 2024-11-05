@@ -60,6 +60,7 @@ public class Main {
                 console.next();
                 System.out.println();
                 System.out.println("That is not a valid option.");
+                System.out.print("Choose an option O-4: ");
             }
 
             mode = console.nextInt();
@@ -79,7 +80,7 @@ public class Main {
                     printDescription();
                     break;
                 default:
-                    System.out.print("Please enter 0-4: ");
+                    System.out.println("Please choose an option 0-4.");
                     break;
             }
         } while (mode != 0);
