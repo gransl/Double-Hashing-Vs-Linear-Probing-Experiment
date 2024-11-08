@@ -5,6 +5,20 @@ import java.util.NoSuchElementException;
  * Hashed Dictionary that resolves collisions with linear probing. Contains extra fields and methods for counting
  * the amount of probes done over chosen intervals of time. Because this dictionary can be used for experiments it
  * does not require initial hashTable size to be prime, but will rehash to prime sizes.
+ *
+ * Time Complexity: I don't talk a lot about Time Complexity for specific methods in  this project, so I'll do it
+ * generally for HashTables. The benefits of using a HashTable is that it has amortized O(1) time complexity for add,
+ * delete, and, search. Amortized means, essentially, there may be rare occasions where time complexity is not O(1),
+ * such as when we add and need to enlarge the table and do a rehash, or when there are collisions, having to do
+ * multiple probes to find a location, up to O(n). The idea is that this happens infrequently enough that essentially
+ * these operations run in O(1) time.
+ *
+ * This is so great, why don't we use a HashTable all the time then? The largest downside to HashTable is that
+ * (unless you run very specific kinds, which I think change the time complexity), they are not sorted, so they cannot
+ * be used for contexts where that is needed. Additionally, they require more memory than some other data structures
+ * as, you need arrays much larger than the data you are storing to keep your load factor low so collisions are
+ * infrequent, so you can keep that desired O(1) time complexity.
+ *
  * @param <K> generic of type K for the search key
  * @param <V> generic of type V for the value
  */
@@ -290,6 +304,7 @@ public class LinearProbingWithCount<K, V> implements DictionaryInterface<K, V>
      * @param index the initial hashIndex for this key
      * @param key An object search key we want hashIndex for
      * @return the initial hashIndex if it is unused or available, or the first available or unused one.
+     * Time Complexity: O(n), possibly needs to check every index in the hash table.
      */
     private int linearProbe(int index, K key) {
         boolean found = false;

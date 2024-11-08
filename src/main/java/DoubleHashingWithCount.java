@@ -3,8 +3,11 @@ import java.util.NoSuchElementException;
 
 /**
  * Hashed Dictionary that resolves collisions with double hashing probing. Contains extra fields and methods for
- * counting the amount of probes done over chosen intervals of time. Because this dictionary can be used for experiments it
- *  does not require initial hashTable size to be prime, but will rehash to prime sizes.
+ * counting the amount of probes done over chosen intervals of time. Because this dictionary can be used for experiments
+ * it does not require initial hashTable size to be prime, but will rehash to prime sizes.
+ *
+ *  See LinearProbingwithCount comments for thoughts on the Time Complexity of HashTables in general.
+ *
  * @param <K> generic of type K for the search key
  * @param <V> generic of type V for the value
  */
