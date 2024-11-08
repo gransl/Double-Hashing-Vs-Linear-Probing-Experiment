@@ -5,8 +5,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="76c921b6-5770-4947-bc67-cae5318a862d" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/DoubleHashingWithCount.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/DoubleHashingWithCount.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/LinearProbingWithCount.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/LinearProbingWithCount.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -36,43 +34,43 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Application.Main.executor": "Run",
-    "JUnit.All in AD325_P2_Hashing.executor": "Run",
-    "JUnit.DoubleHashingWithCountTest.containsAndProbeCount.executor": "Coverage",
-    "JUnit.DoubleHashingWithCountTest.containsWithCount.executor": "Run",
-    "JUnit.DoubleHashingWithCountTest.executor": "Coverage",
-    "JUnit.DoubleHashingWithCountTest.remove.executor": "Run",
-    "JUnit.GetStatisticsTest.calculateLinearCapacity.executor": "Run",
-    "JUnit.GetStatisticsTest.executor": "Coverage",
-    "JUnit.GetStatisticsTest.runExperiment.executor": "Run",
-    "JUnit.LinearProbingWithCountTest.constructor.executor": "Coverage",
-    "JUnit.LinearProbingWithCountTest.containsAndProbeCount.executor": "Coverage",
-    "JUnit.LinearProbingWithCountTest.containsWithCount.executor": "Run",
-    "JUnit.LinearProbingWithCountTest.displayHashTable.executor": "Run",
-    "JUnit.LinearProbingWithCountTest.executor": "Coverage",
-    "JUnit.LinearProbingWithCountTest.getKeyIterator.executor": "Coverage",
-    "JUnit.LinearProbingWithCountTest.getValueAndContains.executor": "Debug",
-    "JUnit.LinearProbingWithCountTest.removeAndAddAtRemovedIndex.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary": "JUnit5",
-    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5": "",
-    "git-widget-placeholder": "final-touches",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "/Users/ren/Documents/CS/AD325/AD325_P2_Hashing",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "Libraries",
-    "project.structure.proportion": "0.0",
-    "project.structure.side.proportion": "0.2",
-    "settings.editor.selected.configurable": "Errors",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.Main.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.All in AD325_P2_Hashing.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.DoubleHashingWithCountTest.containsAndProbeCount.executor&quot;: &quot;Coverage&quot;,
+    &quot;JUnit.DoubleHashingWithCountTest.containsWithCount.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.DoubleHashingWithCountTest.executor&quot;: &quot;Coverage&quot;,
+    &quot;JUnit.DoubleHashingWithCountTest.remove.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GetStatisticsTest.calculateLinearCapacity.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GetStatisticsTest.executor&quot;: &quot;Coverage&quot;,
+    &quot;JUnit.GetStatisticsTest.runExperiment.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.LinearProbingWithCountTest.constructor.executor&quot;: &quot;Coverage&quot;,
+    &quot;JUnit.LinearProbingWithCountTest.containsAndProbeCount.executor&quot;: &quot;Coverage&quot;,
+    &quot;JUnit.LinearProbingWithCountTest.containsWithCount.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.LinearProbingWithCountTest.displayHashTable.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.LinearProbingWithCountTest.executor&quot;: &quot;Coverage&quot;,
+    &quot;JUnit.LinearProbingWithCountTest.getKeyIterator.executor&quot;: &quot;Coverage&quot;,
+    &quot;JUnit.LinearProbingWithCountTest.getValueAndContains.executor&quot;: &quot;Debug&quot;,
+    &quot;JUnit.LinearProbingWithCountTest.removeAndAddAtRemovedIndex.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary&quot;: &quot;JUnit5&quot;,
+    &quot;com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5&quot;: &quot;&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;final-touches&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/ren/Documents/CS/AD325/AD325_P2_Hashing&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Libraries&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;Errors&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/uml_diagram" />
@@ -85,7 +83,7 @@
       <recent name="" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.Main">
+  <component name="RunManager" selected="JUnit.All in AD325_P2_Hashing">
     <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="Main" />
       <module name="AD325_P2_Hashing" />
@@ -224,11 +222,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.All in AD325_P2_Hashing" />
         <item itemvalue="Application.Main" />
         <item itemvalue="JUnit.LinearProbingWithCountTest" />
         <item itemvalue="JUnit.GetStatisticsTest" />
         <item itemvalue="JUnit.DoubleHashingWithCountTest" />
-        <item itemvalue="JUnit.All in AD325_P2_Hashing" />
       </list>
     </recent_temporary>
   </component>
@@ -250,7 +248,7 @@
       <updated>1728925836223</updated>
       <workItem from="1728925898661" duration="62000" />
       <workItem from="1730604231272" duration="42124000" />
-      <workItem from="1731027743619" duration="1251000" />
+      <workItem from="1731027743619" duration="1505000" />
     </task>
     <servers />
   </component>

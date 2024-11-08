@@ -14,10 +14,9 @@ import java.util.NoSuchElementException;
  * these operations run in O(1) time.
  *
  * This is so great, why don't we use a HashTable all the time then? The largest downside to HashTable is that
- * (unless you run very specific kinds, which I think change the time complexity), they are not sorted, so they cannot
- * be used for contexts where that is needed. Additionally, they require more memory than some other data structures
- * as, you need arrays much larger than the data you are storing to keep your load factor low so collisions are
- * infrequent, so you can keep that desired O(1) time complexity.
+ * they are not sorted, so they cannot be used for contexts where that is needed. Additionally, they require more memory
+ * than some other data structures as, you need arrays much larger than the data you are storing to keep your
+ * load factor low so collisions are infrequent, so you can keep that desired O(1) time complexity.
  *
  * @param <K> generic of type K for the search key
  * @param <V> generic of type V for the value
